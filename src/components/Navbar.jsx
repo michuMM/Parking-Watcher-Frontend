@@ -2,7 +2,7 @@ import siteLogo from '../assets/png/logo-no-background.png'
 
 const Navbar = () => {
     return (
-        <nav className="bg-white text-black h-28 p-4 font-font flex justify-between items-center">
+        <nav className="bg-white text-black h-28 p-4 font-font flex sticky top-0 justify-between items-center">
             {/* Logo po lewej stronie */}
             <div className="flex items-center">
                 <img src={siteLogo} alt="Logo" className="h-14 ml-12" />

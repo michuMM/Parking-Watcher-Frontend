@@ -1,11 +1,16 @@
 import './App.css'
 import Navbar from './components/Navbar';
+import Signup from './components/Signup';
 
 function App() {
   document.body.style.backgroundColor = "#f1f2f6";
   return (
     <>
-     <Navbar />
+      <Navbar />
+      <div className="mt-16"> {/* Ustaw margines na górze dla odstępu */}
+        <Signup />
+      </div>
+      
     </>
   )
 }
