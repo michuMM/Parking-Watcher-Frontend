@@ -1,18 +1,32 @@
-import './App.css'
-import Navbar from './components/Navbar';
-import Signup from './components/Signup';
+import Navbar from "./components/Navbar"
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import './index.css'
 
-function App() {
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#378CE7",
+      light: "67C6E3",
+      dark: "5356FF",
+      contrastText: "white"
+    }
+  },
+  typography: {
+    "fontFamily": "Roboto Condensed",
+    "fontSize": 16,
+    "fontWeightLight": 300,
+    "fontWeightRegular": 400,
+    "fontWeightMedium": 500
+   }
+});
+
+const App = () => {
   document.body.style.backgroundColor = "#f1f2f6";
   return (
-    <>
+    <ThemeProvider theme={theme}>
       <Navbar />
-      <div className="mt-16"> {/* Ustaw margines na górze dla odstępu */}
-        <Signup />
-      </div>
-      
-    </>
-  )
+    </ThemeProvider>
+  );
 }
 
-export default App
+export default App;

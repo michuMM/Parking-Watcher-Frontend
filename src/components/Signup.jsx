@@ -3,6 +3,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 
 const Signup = () => {
     const [startDate, setStartDate] = useState(null);
+    
     return (
         <div className="flex justify-center items-center">
             <form className="w-96 p-6 shadow-lg bg-white rounded">
