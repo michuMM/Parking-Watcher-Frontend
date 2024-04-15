@@ -142,13 +142,15 @@ const Navbar = () => {
                                                 }}
                                                 divider
                                             >
-                                                <ListItemText inset>
+                                                <ListItemText inset display="block">
                                                     <Typography textTransform={'uppercase'}>{page}</Typography>
                                                 </ListItemText>
                                             </MenuItem>
                                         </>
                                     ))
                                 }
+                                <Button variant="contained" sx={{ width: '100%', borderRadius: 0 }}>SIGN IN</Button>
+                                <Button variant="contained" sx={{ width: '100%', borderRadius: 0, marginTop: 0.6 }}>REGISTER</Button>
                             </Paper>
                         </Menu>
                     </Box>
