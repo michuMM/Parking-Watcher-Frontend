@@ -1,5 +1,4 @@
 import { useState } from "react";
-import ReCAPTCHA from "react-google-recaptcha";
 import {
     Container,
     Paper,
@@ -12,18 +11,58 @@ import {
 import * as yup from "yup"
 
 const schema = yup.object({
-    username: yup
+    username: yup.string().min(10).required(),
+    email: yup.string().email().required(),
+    password: yup.string().min(10).required(),
+    phoneNumber: yup
     .string()
-    .required("Nazwa użytkownika jest wymagana"),
-    email: yup
-    .string()
-    .email("Ten email jest niepoprawny")
-    .required("email jest wymagany")
+    .matches(/^[0-9]+$/, "must be only digits")
+    .min(9, "phone number must have 9 digits")
+    .max(9, "phone number must have 9 digits")
+    .required("phone number is required"),
+    confirmPassword: yup.string().oneOf([yup.ref("password")], "confirmed password doesn't match").required()
 });
 
 const Signup = () => {
+    const [formData, setFormData] = useState({
+        username: "",
+        email: "",
+        password: "",
+        phoneNumber: "",
+        confirmPassword: "",
+    });
+    const [errors, setErrors] = useState({});
     const [startDate, setStartDate] = useState(null);
+
+    const uppercaseFirstLetter = str => {
+        if(str) 
+            return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+    const handleChange = ev => {
+        const {id, value} = ev.target;
+
+        setFormData({
+          ...formData,
+          [id]: value,
+        });
+    };
     
+    const handleSubmit = async ev => {
+        ev.preventDefault();
+    
+        try {
+          await schema.validate(formData, {abortEarly: false});
+          console.log("Form Submitted", formData);
+        } catch (error) {
+            const newErrors = {};
+            console.log(error)    
+            error.inner.forEach(err => newErrors[err.path] = err.message);
+            
+            setErrors(newErrors);
+            console.log(errors);
+        }
+    };
+
     return (
         <form>
             <Container 
@@ -38,9 +77,9 @@ const Signup = () => {
                     maxWidth: 500,
                     justifyContent: 'center',
                     marginTop: {
-                        xs: 2,
-                        sm: 3,
-                        md: 4
+                        xs: 3,
+                        sm: 4,
+                        md: 5
                     },
                     padding: 3,
                     
@@ -48,38 +87,66 @@ const Signup = () => {
                     <Typography variant="h5">Zarejestruj się</Typography>
                     <Divider sx={{ marginTop: 1 }} />
                     <TextField sx={{
-                        marginTop: 2,
-                    }} id="outlined-basic" label="Nazwa użytkownika" variant="outlined" size="small" />
-                    <TextField sx={{
-                        marginTop: 2,
-                    }} id="outlined-basic" label="Email" variant="outlined" size="small" />
+                            marginTop: 2,
+                    }} 
+                        error={errors.username}
+                        id="username" 
+                        label="Nazwa użytkownika" 
+                        variant="outlined" 
+                        size="small" 
+                        onChange={handleChange}
+                        component="essa"
+                        helperText={uppercaseFirstLetter(errors.username)}
+                    />
                     <TextField 
+                        error={Boolean(errors.email)}
+                        sx={{
+                            marginTop: 2,
+                        }} 
+                        id="email" 
+                        label="Email" 
+                        variant="outlined" 
+                        size="small" 
+                        onChange={handleChange}
+                        helperText={uppercaseFirstLetter(errors.email)}
+                    />
+                    <TextField
+                        error={Boolean(errors.password)} 
                         sx={{
                             marginTop: 2
                         }} 
-                        id="outlined-basic"
+                        id="password"
                         label="Hasło" 
                         variant="outlined"
                         size="small"
                         type="password"
+                        onChange={handleChange}
+                        helperText={uppercaseFirstLetter(errors.password)}
                     />
-                    <TextField 
+                    <TextField
+                        error={Boolean(errors.confirmPassword)} 
                         sx={{
                             marginTop: 2
                         }} 
-                        id="outlined-basic" 
+                        id="confirmPassword" 
                         label="Potwierdź hasło" 
                         variant="outlined" 
                         size="small" 
                         type="password"
+                        onChange={handleChange}
+                        helperText={uppercaseFirstLetter(errors.confirmPassword)}
                     />
-                    <TextField 
+                    <TextField
+                        error={Boolean(errors.phoneNumber)} 
                         sx={{
                             marginTop: 2,
-                        }} id="outlined-basic" 
+                        }} 
+                        id="phoneNumber" 
                         label="Nr telefonu" 
                         variant="outlined" 
                         size="small" 
+                        onChange={handleChange}
+                        helperText={uppercaseFirstLetter(errors.phoneNumber)}
                     />
                     <Box component="captcha" 
                         sx={{ 
@@ -88,11 +155,13 @@ const Signup = () => {
                             transform: "scale(0.87)"
                         }}
                     >
-                        <ReCAPTCHA
-                            sitekey="6LeeSrQpAAAAAG4D2ZK0-6sAcu7AGFfdDmeVQ9Nf"
-                        />
                     </Box>
-                    <Button variant="contained" sx={{ marginTop: 2 }}>Zarejestruj się</Button>
+                    <Button 
+                        type="submit"
+                        variant="contained" 
+                        sx={{ marginTop: 1 }}
+                        onClick={handleSubmit}
+                    >Zarejestruj się</Button>
                     <Typography sx={{
                         textAlign: "",
                         marginTop: 1.5
@@ -105,4 +174,4 @@ const Signup = () => {
     );
 }
 
- export default Signup;
+ export default Signup
