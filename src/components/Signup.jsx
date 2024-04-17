@@ -20,7 +20,9 @@ const schema = yup.object({
     .min(9, "phone number must have 9 digits")
     .max(9, "phone number must have 9 digits")
     .required("phone number is required"),
-    confirmPassword: yup.string().oneOf([yup.ref("password")], "confirmed password doesn't match").required()
+    confirmPassword: yup.string().
+    oneOf([yup.ref("password")], "confirmed password doesn't match")
+    .required("Confirmed password is required")
 });
 
 const Signup = () => {
@@ -52,6 +54,7 @@ const Signup = () => {
     
         try {
           await schema.validate(formData, {abortEarly: false});
+          setErrors({});
           console.log("Form Submitted", formData);
         } catch (error) {
             const newErrors = {};
