@@ -55,14 +55,12 @@ const Signup = () => {
         try {
           await schema.validate(formData, {abortEarly: false});
           setErrors({});
-          console.log("Form Submitted", formData);
         } catch (error) {
             const newErrors = {};
             console.log(error)    
             error.inner.forEach(err => newErrors[err.path] = err.message);
             
             setErrors(newErrors);
-            console.log(errors);
         }
     };
 

@@ -10,7 +10,8 @@ import {
     Button,
     MenuItem,
     Paper,
-    ListItemText
+    ListItemText,
+    Link
 } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu';
 import { useEffect, useState } from "react";
@@ -71,6 +72,7 @@ const Navbar = () => {
                                     bgColor: "blue",
                                     margin: 1
                                 }}
+
                             >
                                 {page}
                             </Button>
@@ -92,9 +94,11 @@ const Navbar = () => {
                                     },
                                     color: "white",
                                     ml: 1,
-                                    width: 120
+                                    width: 120,
+                                    textAlign: "center"
                                 }}
                                 variant="contained"
+                                href={idx==0 ? "/signin" : "/signup"}
                             >
                                 <Typography fontWeight={400}>
                                     {txt}
@@ -149,7 +153,15 @@ const Navbar = () => {
                                                         textAlign: "center",
                                                         display: "block" 
                                                     }}>
-                                                        <Typography textTransform={'uppercase'}>{page}</Typography>
+                                                        <Typography textTransform={'uppercase'}>
+                                                            <Link sx={{ 
+                                                                textDecoration: 'none', 
+                                                            }} href={`/${page}`}
+                                                                color="inherit"
+                                                            >
+                                                                {page}
+                                                            </Link>
+                                                        </Typography>
                                                     </ListItemText>
                                                 </MenuItem>
                                             </>
@@ -157,14 +169,17 @@ const Navbar = () => {
                                     }
                                     {buttons.map((buttonText, idx) => (
                                         <Button variant="contained" sx={{ 
-                                            width: '100%', 
-                                            borderRadius: 0, 
-                                            display: {
-                                                xs: 'block',
-                                                sm: 'none'
-                                            },
-                                            marginTop: idx == 1 ? 0.6 : 0
-                                        }}>
+                                                width: '100%', 
+                                                borderRadius: 0, 
+                                                display: {
+                                                    xs: 'block',
+                                                    sm: 'none'
+                                                },
+                                                marginTop: idx == 1 ? 0.6 : 0,
+                                                textAlign: "center"
+                                        }}
+                                            href={idx==0 ? "/signin" : "/signup"}
+                                        >
                                             {buttonText}
                                         </Button>
                                     ))}
