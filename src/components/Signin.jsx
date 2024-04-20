@@ -1,10 +1,21 @@
-import { Button, Container, Divider, Paper, TextField, Typography } from "@mui/material";
-
-
+import { 
+    Button, 
+    Container, 
+    Divider, 
+    Paper, 
+    TextField, 
+    Typography,
+    Alert
+} from "@mui/material";
+import { useLocation } from 'react-router-dom'
 
 const Signin = () => {
+    const locationData = useLocation();
+
+    const handleSubmit = ev => ev.preventDefault();
+
     return (
-        <form>
+        <form onSubmit={handleSubmit}>
             <Container
                 component="sign_in"
                 maxWidth="sm"
@@ -25,6 +36,18 @@ const Signin = () => {
                 }}>
                     <Typography variant="h5">Sign In</Typography>
                     <Divider sx={{ marginTop: 1}} />
+
+                    {(locationData.state && locationData.state.signedUp) ? <>
+                        <Alert 
+                            severity="success"
+                            sx={{
+                                marginTop: 2
+                            }}
+                        >
+                            Account created successfully! Now you can sign in
+                        </Alert>
+                    </> : <></>} 
+
                     <TextField sx={{
                         marginTop: 2,
                     }}

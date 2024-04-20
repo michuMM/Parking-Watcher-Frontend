@@ -48,6 +48,7 @@ const router = createBrowserRouter([
 
 const App = () => {
   document.body.style.backgroundColor = "#f1f2f6";
+  
   return (
     <ThemeProvider theme={theme}>
       <RouterProvider router={router} />

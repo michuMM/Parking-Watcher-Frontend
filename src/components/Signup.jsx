@@ -9,7 +9,11 @@ import {
     Button
 } from '@mui/material'
 import * as yup from "yup"
-import { Navigate } from 'react-router-dom'
+import { 
+    Navigate,
+    useLocation
+} from 'react-router-dom'
+import axios from 'axios'
 
 const schema = yup.object({
     username: yup.string().min(10).required(),
@@ -27,6 +31,8 @@ const schema = yup.object({
 });
 
 const Signup = () => {
+    const apiUrl = import.meta.env.VITE_API_ENDPOINT;
+
     const [formData, setFormData] = useState({
         username: "",
         email: "",
@@ -52,12 +58,21 @@ const Signup = () => {
         ev.preventDefault();
     
         try {
-          await schema.validate(formData, 
+            await schema.validate(formData, 
             {
                 abortEarly: false
             });
-          setErrors({});
-          setSuccessfullSignUp(true);
+            setErrors({});
+            const req = await axios.post(`${apiUrl}/auth/register`, {
+                name: formData.username,
+                email: formData.email,
+                password: formData.password
+            });
+            if(req.status === 200) {
+
+            }
+    
+            setSuccessfullSignUp(true);
         } catch (error) {
             const newErrors = {};
             console.log(error)    
@@ -155,18 +170,9 @@ const Signup = () => {
                     /> 
                     {successfullSignUp ? (
                         <Navigate 
-                            to="/" 
-                            state={{ data: "hello" }}
+                            to="/signin" 
+                            state={{ signedUp: true }}
                         />
-                    
-                        // <Alert 
-                        //     severity="success"
-                        //     sx={{
-                        //         marginTop: 2
-                        //     }}
-                        // >
-                        //     Wysłaliśmy Ci email w celu potwierdzenia tożsamości
-                        // </Alert>
                     ) : <></>
                     }
                     <Button 
