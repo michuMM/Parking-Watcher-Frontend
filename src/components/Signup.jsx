@@ -150,6 +150,7 @@ const Signup = () => {
                         variant="outlined" 
                         size="small" 
                         onChange={handleChange}
+                        type="number"
                         helperText={uppercaseFirstLetter(errors.phoneNumber)}
                     /> 
                     {successfullSignUp ? (
@@ -180,7 +181,7 @@ const Signup = () => {
                         textAlign: "",
                         marginTop: 1.5
                     }}>
-                        Already have an account?<a href="/signin">Login</a>
+                        Already have an account? <a href="/signin">Login</a>
                     </Typography>
                 </Paper>
             </Container>

@@ -8,6 +8,7 @@ import {
   RouterProvider,
   Outlet
 } from 'react-router-dom'
+import Signin from "./components/Signin";
 
 const Layout = () => (
   <>
@@ -31,7 +32,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/signin",
-        element: <></>
+        element: <Signin />
       },
       {
         path: "/contact",
