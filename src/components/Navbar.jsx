@@ -10,10 +10,11 @@ import {
     Button,
     MenuItem,
     Paper,
-    ListItemText
+    ListItemText,
 } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu';
 import { useEffect, useState } from "react";
+import { Link } from 'react-router-dom'
 
 const Navbar = () => {
     const pages = ["home", "about", "contact"];
@@ -71,6 +72,7 @@ const Navbar = () => {
                                     bgColor: "blue",
                                     margin: 1
                                 }}
+                                href={`/${page}`}
                             >
                                 {page}
                             </Button>
@@ -92,12 +94,14 @@ const Navbar = () => {
                                     },
                                     color: "white",
                                     ml: 1,
-                                    width: 120
+                                    width: 120,
+                                    textAlign: "center"
                                 }}
                                 variant="contained"
+                                href={idx == 0 ? "/signin" : "/signup"}
                             >
                                 <Typography fontWeight={400}>
-                                    {txt}
+                                    {txt} 
                                 </Typography>
                             </Button>
                             ))}
@@ -136,22 +140,32 @@ const Navbar = () => {
                                     display: 'block'
                                 }}
                             >
-                                <Paper sx={{ width: 220, maxWidth: '100%' }}>
+                                <Paper sx={{ 
+                                    width: 220, 
+                                    maxWidth: '100%' 
+                                }}>
                                     {
                                         pages.map(page => (
                                             <>
-                                                <MenuItem sx={{
-                                                        bgColor: "blue"
+                                                <Link 
+                                                    to={`/${page}`} 
+                                                    style={{
+                                                        textDecoration: "none",
+                                                        color: "black"
                                                     }}
-                                                    divider
                                                 >
-                                                    <ListItemText sx={{ 
-                                                        textAlign: "center",
-                                                        display: "block" 
-                                                    }}>
-                                                        <Typography textTransform={'uppercase'}>{page}</Typography>
-                                                    </ListItemText>
-                                                </MenuItem>
+                                                    <MenuItem 
+                                                        divider
+                                                        onClick={handleCloseNavMenu}
+                                                    >
+                                                        <ListItemText sx={{ 
+                                                            textAlign: "center",
+                                                            display: "block" 
+                                                        }}>
+                                                            <Typography textTransform={'uppercase'}>{page}</Typography>
+                                                        </ListItemText>
+                                                    </MenuItem>
+                                                </Link>
                                             </>
                                         ))
                                     }
@@ -163,8 +177,11 @@ const Navbar = () => {
                                                 xs: 'block',
                                                 sm: 'none'
                                             },
-                                            marginTop: idx == 1 ? 0.6 : 0
-                                        }}>
+                                            marginTop: idx == 1 ? 0.6 : 0,
+                                            textAlign: "center"
+                                        }}
+                                            href={idx==0 ? "/signin" : "/signup"}
+                                        >
                                             {buttonText}
                                         </Button>
                                     ))}
