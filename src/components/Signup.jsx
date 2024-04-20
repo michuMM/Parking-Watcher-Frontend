@@ -5,7 +5,7 @@ import {
     Typography,
     TextField,
     Divider,
-    Alert,
+    //Alert,
     Button
 } from '@mui/material'
 import * as yup from "yup"
@@ -88,14 +88,14 @@ const Signup = () => {
                     padding: 3,
                     
                 }}>
-                    <Typography variant="h5">Zarejestruj się</Typography>
+                    <Typography variant="h5">Sign Up</Typography>
                     <Divider sx={{ marginTop: 1 }} />
                     <TextField sx={{
                             marginTop: 2,
                     }} 
                         error={errors.username}
                         id="username" 
-                        label="Nazwa użytkownika" 
+                        label="Username" 
                         variant="outlined" 
                         size="small" 
                         onChange={handleChange}
@@ -120,7 +120,7 @@ const Signup = () => {
                             marginTop: 2
                         }} 
                         id="password"
-                        label="Hasło" 
+                        label="Password" 
                         variant="outlined"
                         size="small"
                         type="password"
@@ -133,7 +133,7 @@ const Signup = () => {
                             marginTop: 2
                         }} 
                         id="confirmPassword" 
-                        label="Potwierdź hasło" 
+                        label="Confirm password" 
                         variant="outlined" 
                         size="small" 
                         type="password"
@@ -146,7 +146,7 @@ const Signup = () => {
                             marginTop: 2,
                         }} 
                         id="phoneNumber" 
-                        label="Nr telefonu" 
+                        label="Phone number" 
                         variant="outlined" 
                         size="small" 
                         onChange={handleChange}
@@ -174,13 +174,13 @@ const Signup = () => {
                         sx={{ marginTop: 2 }}
                         onClick={handleSubmit}
                     >
-                        Zarejestruj się
+                        Sign Up
                     </Button>
                     <Typography sx={{
                         textAlign: "",
                         marginTop: 1.5
                     }}>
-                        Masz już konto? Zaloguj się <a href="/signin">tutaj!</a>
+                        Already have an account?<a href="/signin">Login</a>
                     </Typography>
                 </Paper>
             </Container>
