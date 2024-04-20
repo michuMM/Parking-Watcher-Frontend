@@ -5,10 +5,11 @@ import {
     Typography,
     TextField,
     Divider,
-    Box,
+    Alert,
     Button
 } from '@mui/material'
 import * as yup from "yup"
+import { Navigate } from 'react-router-dom'
 
 const schema = yup.object({
     username: yup.string().min(10).required(),
@@ -34,12 +35,10 @@ const Signup = () => {
         confirmPassword: "",
     });
     const [errors, setErrors] = useState({});
-    const [startDate, setStartDate] = useState(null);
+    const [successfullSignUp, setSuccessfullSignUp] = useState(false);
 
-    const uppercaseFirstLetter = str => {
-        if(str) 
-            return str.charAt(0).toUpperCase() + str.slice(1);
-    }
+    const uppercaseFirstLetter = str => str ? str.charAt(0).toUpperCase() + str.slice(1) : "";
+        
     const handleChange = ev => {
         const {id, value} = ev.target;
 
@@ -53,8 +52,12 @@ const Signup = () => {
         ev.preventDefault();
     
         try {
-          await schema.validate(formData, {abortEarly: false});
+          await schema.validate(formData, 
+            {
+                abortEarly: false
+            });
           setErrors({});
+          setSuccessfullSignUp(true);
         } catch (error) {
             const newErrors = {};
             console.log(error)    
@@ -148,21 +151,31 @@ const Signup = () => {
                         size="small" 
                         onChange={handleChange}
                         helperText={uppercaseFirstLetter(errors.phoneNumber)}
-                    />
-                    <Box component="captcha" 
-                        sx={{ 
-                            marginTop: 2,
-                            transformOrigin: '0 0',
-                            transform: "scale(0.87)"
-                        }}
-                    >
-                    </Box>
+                    /> 
+                    {successfullSignUp ? (
+                        <Navigate 
+                            to="/" 
+                            state={{ data: "hello" }}
+                        />
+                    
+                        // <Alert 
+                        //     severity="success"
+                        //     sx={{
+                        //         marginTop: 2
+                        //     }}
+                        // >
+                        //     Wysłaliśmy Ci email w celu potwierdzenia tożsamości
+                        // </Alert>
+                    ) : <></>
+                    }
                     <Button 
                         type="submit"
                         variant="contained" 
-                        sx={{ marginTop: 1 }}
+                        sx={{ marginTop: 2 }}
                         onClick={handleSubmit}
-                    >Zarejestruj się</Button>
+                    >
+                        Zarejestruj się
+                    </Button>
                     <Typography sx={{
                         textAlign: "",
                         marginTop: 1.5

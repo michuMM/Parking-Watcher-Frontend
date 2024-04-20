@@ -11,10 +11,10 @@ import {
     MenuItem,
     Paper,
     ListItemText,
-    Link
 } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu';
 import { useEffect, useState } from "react";
+import { Link } from 'react-router-dom'
 
 const Navbar = () => {
     const pages = ["home", "about", "contact"];
@@ -72,7 +72,7 @@ const Navbar = () => {
                                     bgColor: "blue",
                                     margin: 1
                                 }}
-
+                                href={`/${page}`}
                             >
                                 {page}
                             </Button>
@@ -98,10 +98,10 @@ const Navbar = () => {
                                     textAlign: "center"
                                 }}
                                 variant="contained"
-                                href={idx==0 ? "/signin" : "/signup"}
+                                href={idx == 0 ? "/signin" : "/signup"}
                             >
                                 <Typography fontWeight={400}>
-                                    {txt}
+                                    {txt} 
                                 </Typography>
                             </Button>
                             ))}
@@ -140,43 +140,45 @@ const Navbar = () => {
                                     display: 'block'
                                 }}
                             >
-                                <Paper sx={{ width: 220, maxWidth: '100%' }}>
+                                <Paper sx={{ 
+                                    width: 220, 
+                                    maxWidth: '100%' 
+                                }}>
                                     {
                                         pages.map(page => (
                                             <>
-                                                <MenuItem sx={{
-                                                        bgColor: "blue"
+                                                <Link 
+                                                    to={`/${page}`} 
+                                                    style={{
+                                                        textDecoration: "none",
+                                                        color: "black"
                                                     }}
-                                                    divider
                                                 >
-                                                    <ListItemText sx={{ 
-                                                        textAlign: "center",
-                                                        display: "block" 
-                                                    }}>
-                                                        <Typography textTransform={'uppercase'}>
-                                                            <Link sx={{ 
-                                                                textDecoration: 'none', 
-                                                            }} href={`/${page}`}
-                                                                color="inherit"
-                                                            >
-                                                                {page}
-                                                            </Link>
-                                                        </Typography>
-                                                    </ListItemText>
-                                                </MenuItem>
+                                                    <MenuItem 
+                                                        divider
+                                                        onClick={handleCloseNavMenu}
+                                                    >
+                                                        <ListItemText sx={{ 
+                                                            textAlign: "center",
+                                                            display: "block" 
+                                                        }}>
+                                                            <Typography textTransform={'uppercase'}>{page}</Typography>
+                                                        </ListItemText>
+                                                    </MenuItem>
+                                                </Link>
                                             </>
                                         ))
                                     }
                                     {buttons.map((buttonText, idx) => (
                                         <Button variant="contained" sx={{ 
-                                                width: '100%', 
-                                                borderRadius: 0, 
-                                                display: {
-                                                    xs: 'block',
-                                                    sm: 'none'
-                                                },
-                                                marginTop: idx == 1 ? 0.6 : 0,
-                                                textAlign: "center"
+                                            width: '100%', 
+                                            borderRadius: 0, 
+                                            display: {
+                                                xs: 'block',
+                                                sm: 'none'
+                                            },
+                                            marginTop: idx == 1 ? 0.6 : 0,
+                                            textAlign: "center"
                                         }}
                                             href={idx==0 ? "/signin" : "/signup"}
                                         >
