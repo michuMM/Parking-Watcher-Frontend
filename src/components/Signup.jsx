@@ -69,10 +69,9 @@ const Signup = () => {
                 password: formData.password
             });
             if(req.status === 200) {
-
+                setSuccessfullSignUp(true);
             }
     
-            setSuccessfullSignUp(true);
         } catch (error) {
             const newErrors = {};
             console.log(error)    
