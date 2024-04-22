@@ -3,7 +3,7 @@ import { getContext } from '../context/ContextProvider'
 import { Navigate } from 'react-router-dom'
 
 const Home = () => {
-    const { userToken } = getContext()
+    const { userToken } = getContext();
  
         return (
             <>
