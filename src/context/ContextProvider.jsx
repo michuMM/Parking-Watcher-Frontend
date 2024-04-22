@@ -9,6 +9,7 @@ const StateContext = createContext({
     userToken: null,
     setCurrentUser: () => {},
     setToken: () => {},
+    logoutUser: () => {}
 });
   
 export const ContextProvider = ({ children }) => {
@@ -22,12 +23,18 @@ export const ContextProvider = ({ children }) => {
       setUserToken(token);
     }
   
+    const logoutUser = () => {
+      localStorage.removeItem('TOKEN');
+      setUserToken('');  
+    }
+
     return (
       <StateContext.Provider
         value={{   
           currentUser,
           setCurrentUser,
           userToken,
+          logoutUser,
           setToken,
         }}
       >

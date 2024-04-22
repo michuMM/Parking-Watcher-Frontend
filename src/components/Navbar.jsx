@@ -14,13 +14,18 @@ import {
 } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu';
 import { useEffect, useState } from "react";
-import { Link } from 'react-router-dom'
+import { 
+    Link, 
+    useNavigate
+} from 'react-router-dom'
 import { getContext } from '../context/ContextProvider'
+import axios from "../lib/axios";
 
 const Navbar = () => {
+    const navigate = useNavigate();
     const pages = ["home", "about", "contact"];
     const buttons = ["Log in", "Register"];
-    const { userToken } = getContext();
+    const { userToken, logoutUser } = getContext();
 
     const [anchorElNav, setAnchorElNav] = useState(null);
     
@@ -35,7 +40,15 @@ const Navbar = () => {
     useEffect(() => {
         window.addEventListener('resize', handleCloseNavMenu)
     }, []);
-  
+    
+    const signOutUser = async () => {
+        const request = await axios.post('/auth/logout');
+        if(request.status === 200) {
+            logoutUser();
+            navigate('/');
+        }
+    }
+
     return (
         <>
             <AppBar sx={{
@@ -86,27 +99,47 @@ const Navbar = () => {
                                 margin: 2,
                                 mr: 0
                         }}>
-                            {buttons.map((txt, idx) => (
-                            <Button
-                                key={idx}
-                                sx={{ 
-                                    display: {
-                                        xs: 'none',
-                                        sm: "block"
-                                    },
-                                    color: "white",
-                                    ml: 1,
-                                    width: 120,
-                                    textAlign: "center"
-                                }}
-                                variant="contained"
-                                href={idx == 0 ? "/signin" : "/signup"}
-                            >
-                                <Typography fontWeight={400}>
-                                    {txt} 
-                                </Typography>
-                            </Button>
+                            {!userToken && buttons.map((txt, idx) => (
+                                <Button
+                                    key={idx}
+                                    sx={{ 
+                                        display: {
+                                            xs: 'none',
+                                            sm: "block"
+                                        },
+                                        color: "white",
+                                        ml: 1,
+                                        width: 120,
+                                        textAlign: "center"
+                                    }}
+                                    variant="contained"
+                                    href={idx == 0 ? "/signin" : "/signup"}
+                                >
+                                    <Typography fontWeight={400}>
+                                        {txt} 
+                                    </Typography>
+                                </Button>
                             ))}
+                            {userToken && (
+                                <Button
+                                    sx={{ 
+                                        display: {
+                                            xs: 'none',
+                                            sm: "block"
+                                        },
+                                        color: "white",
+                                        ml: 1,
+                                        width: 120,
+                                        textAlign: "center"
+                                    }}
+                                    variant="contained"
+                                    onClick={signOutUser}
+                                >
+                                    <Typography fontWeight={400}>
+                                        Log out
+                                    </Typography>
+                                </Button>
+                            )}
                         </Box>
                         <Box sx={{ 
                             flexGrow: 1, 
@@ -147,7 +180,7 @@ const Navbar = () => {
                                     maxWidth: '100%' 
                                 }}>
                                     {
-                                        pages.map(page => (
+                                        (pages.map(page => (
                                             <>
                                                 <Link 
                                                     to={`/${page}`} 
@@ -169,7 +202,7 @@ const Navbar = () => {
                                                     </MenuItem>
                                                 </Link>
                                             </>
-                                        ))
+                                        )))
                                     }
                                     {!userToken && buttons.map((buttonText, idx) => (
                                         <Button variant="contained" sx={{ 
@@ -187,6 +220,23 @@ const Navbar = () => {
                                             {buttonText}
                                         </Button>
                                     ))}
+                                    {userToken && (
+                                        <>
+                                            <Button variant="contained" sx={{ 
+                                                width: '100%', 
+                                                borderRadius: 0, 
+                                                display: {
+                                                    xs: 'block',
+                                                    sm: 'none'
+                                                },
+                                                textAlign: "center"
+                                            }}
+                                                onClick={signOutUser}
+                                            >
+                                               Log out
+                                            </Button>
+                                        </>
+                                    )}
                                 </Paper>
                             </Menu>
                         </Box>

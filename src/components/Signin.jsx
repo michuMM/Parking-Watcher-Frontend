@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { 
     Button, 
     Container, 
@@ -10,12 +10,18 @@ import {
 } from "@mui/material";
 import { 
     useLocation,
-    Navigate
+    Navigate,
+    useNavigate
  } from 'react-router-dom'
 import axios from '../lib/axios'
 import { getContext } from '../context/ContextProvider';
 
 const Signin = () => {
+    const { userToken } = getContext();
+    const navigate = useNavigate();
+    useEffect(() => {
+        if(userToken) navigate('/')
+    });
     const { setToken } = getContext(); 
 
     const [email, setEmail] = useState('');

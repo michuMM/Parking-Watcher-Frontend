@@ -7,13 +7,14 @@ const Home = () => {
  
         return (
             <>
-                {userToken ? (<div>
-                    hello user
-                </div>) : (
-                <Typography>
-                    jestes wylogowany
-                </Typography>
-
+                {userToken ? (
+                    <Typography textAlign={'center'}>
+                        hello user
+                    </Typography>
+                ) : (
+                    <Typography textAlign={'center'}>
+                        jestes wylogowany
+                    </Typography>
                 )}
             </>
         );

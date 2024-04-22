@@ -1,4 +1,7 @@
-import { useState } from "react";
+import { 
+    useState,
+    useEffect
+} from "react";
 import {
     Container,
     Paper,
@@ -11,9 +14,11 @@ import {
 import * as yup from "yup"
 import { 
     Navigate,
-    useLocation
+    useLocation,
+    useNavigate
 } from 'react-router-dom'
 import axios from '../lib/axios'
+import { getContext } from "../context/ContextProvider";
 
 const schema = yup.object({
     username: yup.string().min(10).required(),
@@ -31,7 +36,12 @@ const schema = yup.object({
 });
 
 const Signup = () => {
-    const apiUrl = import.meta.env.VITE_API_ENDPOINT;
+    // const apiUrl = import.meta.env.VITE_API_ENDPOINT;
+    const { userToken } = getContext();
+    const navigate = useNavigate();
+    useEffect(() => {
+        if(userToken) navigate('/')
+    });
 
     const [formData, setFormData] = useState({
         username: "",
