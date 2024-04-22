@@ -16,8 +16,8 @@ export const ContextProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState({});
 
     const setToken = token => {
-      if (token) localStorage.setItem('TOKEN', token);
-      else localStorage.removeItem('TOKEN');
+      if (token) localStorage.setItem('TOKEN', token)
+      else localStorage.removeItem('TOKEN')
     
       setUserToken(token);
     }
