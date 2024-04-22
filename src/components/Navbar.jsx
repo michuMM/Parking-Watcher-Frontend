@@ -15,11 +15,13 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import { useEffect, useState } from "react";
 import { Link } from 'react-router-dom'
+import { getContext } from '../context/ContextProvider'
 
 const Navbar = () => {
     const pages = ["home", "about", "contact"];
     const buttons = ["Log in", "Register"];
-    
+    const { userToken } = getContext();
+
     const [anchorElNav, setAnchorElNav] = useState(null);
     
     const handleOpenNavMenu = event => {
@@ -169,7 +171,7 @@ const Navbar = () => {
                                             </>
                                         ))
                                     }
-                                    {buttons.map((buttonText, idx) => (
+                                    {!userToken && buttons.map((buttonText, idx) => (
                                         <Button variant="contained" sx={{ 
                                             width: '100%', 
                                             borderRadius: 0, 

@@ -5,11 +5,15 @@ import {
     Typography,
     TextField,
     Divider,
-    Alert,
+    //Alert,
     Button
 } from '@mui/material'
 import * as yup from "yup"
-import { Navigate } from 'react-router-dom'
+import { 
+    Navigate,
+    useLocation
+} from 'react-router-dom'
+import axios from '../lib/axios'
 
 const schema = yup.object({
     username: yup.string().min(10).required(),
@@ -27,6 +31,8 @@ const schema = yup.object({
 });
 
 const Signup = () => {
+    const apiUrl = import.meta.env.VITE_API_ENDPOINT;
+
     const [formData, setFormData] = useState({
         username: "",
         email: "",
@@ -52,12 +58,20 @@ const Signup = () => {
         ev.preventDefault();
     
         try {
-          await schema.validate(formData, 
+            await schema.validate(formData, 
             {
                 abortEarly: false
             });
-          setErrors({});
-          setSuccessfullSignUp(true);
+            setErrors({});
+            const req = await axios.post(`/auth/register`, {
+                name: formData.username,
+                email: formData.email,
+                password: formData.password
+            });
+            if(req.status === 200) {
+                setSuccessfullSignUp(true);
+            }
+    
         } catch (error) {
             const newErrors = {};
             console.log(error)    
@@ -88,14 +102,14 @@ const Signup = () => {
                     padding: 3,
                     
                 }}>
-                    <Typography variant="h5">Zarejestruj się</Typography>
+                    <Typography variant="h5">Sign Up</Typography>
                     <Divider sx={{ marginTop: 1 }} />
                     <TextField sx={{
                             marginTop: 2,
                     }} 
                         error={errors.username}
                         id="username" 
-                        label="Nazwa użytkownika" 
+                        label="Username" 
                         variant="outlined" 
                         size="small" 
                         onChange={handleChange}
@@ -120,7 +134,7 @@ const Signup = () => {
                             marginTop: 2
                         }} 
                         id="password"
-                        label="Hasło" 
+                        label="Password" 
                         variant="outlined"
                         size="small"
                         type="password"
@@ -133,7 +147,7 @@ const Signup = () => {
                             marginTop: 2
                         }} 
                         id="confirmPassword" 
-                        label="Potwierdź hasło" 
+                        label="Confirm password" 
                         variant="outlined" 
                         size="small" 
                         type="password"
@@ -146,26 +160,18 @@ const Signup = () => {
                             marginTop: 2,
                         }} 
                         id="phoneNumber" 
-                        label="Nr telefonu" 
+                        label="Phone number" 
                         variant="outlined" 
                         size="small" 
                         onChange={handleChange}
+                        type="number"
                         helperText={uppercaseFirstLetter(errors.phoneNumber)}
                     /> 
                     {successfullSignUp ? (
                         <Navigate 
-                            to="/" 
-                            state={{ data: "hello" }}
+                            to="/signin" 
+                            state={{ signedUp: true }}
                         />
-                    
-                        // <Alert 
-                        //     severity="success"
-                        //     sx={{
-                        //         marginTop: 2
-                        //     }}
-                        // >
-                        //     Wysłaliśmy Ci email w celu potwierdzenia tożsamości
-                        // </Alert>
                     ) : <></>
                     }
                     <Button 
@@ -174,13 +180,13 @@ const Signup = () => {
                         sx={{ marginTop: 2 }}
                         onClick={handleSubmit}
                     >
-                        Zarejestruj się
+                        Sign Up
                     </Button>
                     <Typography sx={{
                         textAlign: "",
                         marginTop: 1.5
                     }}>
-                        Masz już konto? Zaloguj się <a href="/signin">tutaj!</a>
+                        Already have an account? <a href="/signin">Login</a>
                     </Typography>
                 </Paper>
             </Container>

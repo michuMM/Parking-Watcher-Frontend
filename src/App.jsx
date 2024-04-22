@@ -8,10 +8,14 @@ import {
   RouterProvider,
   Outlet
 } from 'react-router-dom'
+import Signin from "./components/Signin";
+import { ContextProvider } from "./context/ContextProvider";
+import Home from "./components/Home";
 
 const Layout = () => (
   <>
     <Navbar />
+    <Home />
     <Outlet />
   </>
 );
@@ -31,7 +35,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/signin",
-        element: <></>
+        element: <Signin />
       },
       {
         path: "/contact",
@@ -47,10 +51,13 @@ const router = createBrowserRouter([
 
 const App = () => {
   document.body.style.backgroundColor = "#f1f2f6";
+  
   return (
-    <ThemeProvider theme={theme}>
-      <RouterProvider router={router} />
-    </ThemeProvider>
+    <ContextProvider>
+      <ThemeProvider theme={theme}>
+        <RouterProvider router={router} />
+      </ThemeProvider>
+    </ContextProvider>
   );
 }
 
