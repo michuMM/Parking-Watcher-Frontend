@@ -11,11 +11,13 @@ import {
 import Signin from "./components/Signin";
 import { ContextProvider } from "./context/ContextProvider";
 import Home from "./components/Home";
+import Footer from "./components/Footer";
 
 const Layout = () => (
   <>
     <Navbar />
     <Home />
+    <Footer />
     <Outlet />
   </>
 );

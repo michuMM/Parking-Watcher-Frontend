@@ -13,7 +13,7 @@ const Home = () => {
                     </Typography>
                 ) : (
                     <Typography textAlign={'center'}>
-                        jestes wylogowany
+                        You're not logged in.
                     </Typography>
                 )}
             </>
