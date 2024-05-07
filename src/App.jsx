@@ -9,6 +9,8 @@ import {
   Outlet
 } from 'react-router-dom'
 import Signin from "./components/Signin";
+import ForgotPassword from "./components/ForgotPassword";
+import ChangePassword from "./components/ChangePassword";
 import { ContextProvider } from "./context/ContextProvider";
 import Home from "./components/Home";
 import Footer from "./components/Footer";
@@ -39,6 +41,14 @@ const router = createBrowserRouter([
         path: "/signin",
         element: <Signin />
       },
+      {
+        path: "/forgot-password",
+        element: <ForgotPassword />
+      }, 
+      {
+        path: "/change-password",
+        element: <ChangePassword />
+      },      
       {
         path: "/contact",
         element: <></>  
