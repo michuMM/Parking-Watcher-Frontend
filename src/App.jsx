@@ -1,19 +1,66 @@
-import './App.css'
-import Navbar from './components/Navbar';
-import Signup from './components/Signup';
-import ForgotPass from './components/ForgotPass';
+import Navbar from "./components/Navbar"
+import { ThemeProvider } from '@mui/material/styles';
+import './index.css'
+import Signup from "./components/Signup";
+import theme from './theme/theme'
+import { 
+  createBrowserRouter,
+  RouterProvider,
+  Outlet
+} from 'react-router-dom'
+import Signin from "./components/Signin";
+import { ContextProvider } from "./context/ContextProvider";
+import Home from "./components/Home";
+import Footer from "./components/Footer";
 
-function App() {
+const Layout = () => (
+  <>
+    <Navbar />
+    <Home />
+    <Footer />
+    <Outlet />
+  </>
+);
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Layout />,
+    children: [
+      {
+        path: "/home",
+        element: <></>
+      },
+      {
+        path: "/signup",
+        element: <Signup />
+      },
+      {
+        path: "/signin",
+        element: <Signin />
+      },
+      {
+        path: "/contact",
+        element: <></>  
+      },
+      {  
+        path: "/about",
+        element: <></>
+      }
+    ]
+  },
+]);
+
+const App = () => {
   document.body.style.backgroundColor = "#f1f2f6";
+  
   return (
-    <>
-      <Navbar />
-      <div className="mt-16"> {/* Ustaw margines na górze dla odstępu */}
-        <Signup />
-      </div>
-      
-    </>
-  )
+    <ContextProvider>
+      <ThemeProvider theme={theme}>
+        <RouterProvider router={router} />
+      </ThemeProvider>
+    </ContextProvider>
+  );
 }
 
-export default App
+export default App;
