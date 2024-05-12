@@ -63,7 +63,7 @@ const ForgotPassword = () => {
                     <Typography variant="h5">Forgot Password</Typography>
                     <Divider sx={{ marginTop: 1}} />
 
-                    {(locationData.state && locationData.state.successfulPasswordReset) ? <>
+                    {successfulPasswordReset ? <>
                         <Alert 
                             severity="success"
                             sx={{
