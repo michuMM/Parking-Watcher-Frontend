@@ -136,7 +136,7 @@ const Home = () => {
                       justifyContent="center"
                       marginTop={1}
                     >
-                        <Grid item xs={9} md={3}>
+                        <Grid item xs={11} sm={8} md={3}>
                             <Card sx={{ 
                                 maxWidth: 450,
                                 padding: 1
@@ -152,14 +152,14 @@ const Home = () => {
                                         sx={{
                                             marginTop: 2
                                         }}
-                                    >Sign up for our service</Typography>
+                                    >Choose desired location</Typography>
                                     <Typography variant="paragraph">
                                         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id velit non nisi scelerisque pellentesque. Phasellus vel orci et lacus pellentesque pretium. Duis volutpat ante eu fermentum accumsan. Vestibulum sodales urna nec tortor consequat, vel pulvinar metus lacinia. Integer mattis arcu nec dolor commodo, nec bibendum quam faucibus. Mauris in lorem id elit vehicula fringilla sit amet nec metus.
                                     </Typography>
                                 </CardContent>
                             </Card>
                         </Grid>
-                        <Grid item xs={9} md={3}>
+                        <Grid item xs={11} sm={8} md={3}>
                             <Card sx={{ 
                                     maxWidth: 450,
                                     padding: 1
@@ -182,7 +182,7 @@ const Home = () => {
                                 </CardContent>
                             </Card>
                         </Grid>
-                        <Grid item xs={9} md={3}>
+                        <Grid item xs={11} sm={8} md={3}>
                             <Card sx={{ 
                                 maxWidth: 450,
                                 padding: 1
@@ -226,7 +226,7 @@ const Home = () => {
                       justifyContent="center"
                       marginTop={4}
                     >
-                        <Grid item xs={9} md={6} backgroundColor="white">
+                        <Grid item xs={11} md={6} backgroundColor="white">
                             <List dense>
                                 {items.map(item => (
                                     <>
