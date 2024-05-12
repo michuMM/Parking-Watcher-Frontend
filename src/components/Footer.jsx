@@ -1,4 +1,12 @@
-import { Container, Typography,Toolbar, Box,IconButton, Button, Divider } from '@mui/material';
+import { 
+  Container, 
+  Typography,
+  Toolbar, 
+  Box,
+  IconButton, 
+  Button,
+  Divider 
+} from '@mui/material';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import XIcon from '@mui/icons-material/X';
@@ -10,8 +18,9 @@ const Footer = () => {
         backgroundColor: "black",
         color: "white",
         textAlign: "center",
-        padding: "10px",
-        position: "fixed",
+        paddingBottom: 60,
+        paddingTop: 48,
+        position: "relative",
         bottom: "0",
         left: "0",
         width: "100%",

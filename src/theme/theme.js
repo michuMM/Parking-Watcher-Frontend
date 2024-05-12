@@ -10,12 +10,16 @@ const theme = createTheme({
       }
     },
     typography: {
-      "fontFamily": "Roboto Condensed",
-      "fontSize": 16,
-      "fontWeightLight": 300,
-      "fontWeightRegular": 400,
-      "fontWeightMedium": 500
-     }
+        title: {
+          "fontFamily": "Ubuntu Sans",
+          "fontWeight": 800
+        },
+        paragraph: {
+          "fontFamily": "Ubuntu Sans",
+          "fontWeight": 300
+        }
+
+    }
 });
 
 export default theme;

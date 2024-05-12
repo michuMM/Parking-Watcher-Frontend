@@ -6,7 +6,8 @@ import theme from './theme/theme'
 import { 
   createBrowserRouter,
   RouterProvider,
-  Outlet
+  Outlet,
+  
 } from 'react-router-dom'
 import Signin from "./components/Signin";
 import ForgotPassword from "./components/ForgotPassword";
@@ -18,8 +19,7 @@ import Footer from "./components/Footer";
 const Layout = () => (
   <>
     <Navbar />
-    <Home />
-    <Footer />
+    
     <Outlet />
   </>
 );
@@ -31,7 +31,10 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/home",
-        element: <></>
+        element: <>
+          <Home/>
+          <Footer />
+        </>
       },
       {
         path: "/signup",
