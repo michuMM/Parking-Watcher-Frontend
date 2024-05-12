@@ -16,7 +16,7 @@ import {
 import axios from '../lib/axios'
 import { getContext } from '../context/ContextProvider';
 
-const ChangePassword = () => {
+const ProfileSettings = () => {
     const { userToken } = getContext();
     const navigate = useNavigate();
     useEffect(() => {
@@ -25,42 +25,59 @@ const ChangePassword = () => {
 
     const { setToken } = getContext(); 
 
-    const [oldPassword, setOldPassword] = useState('');
-    const [newPassword, setNewPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [passwordMismatch, setPasswordMismatch] = useState(false);
-    const [passwordChanged, setPasswordChanged] = useState(false);
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [error, setError] = useState('');
+    const [profileUpdated, setProfileUpdated] = useState(false);
+
+    // Function to fetch current user profile data
+    const fetchUserProfile = async () => {
+        try {
+            const response = await axios.get("/user/profile");
+            const { username, email } = response.data;
+            setUsername(username);
+            setEmail(email);
+        } catch (error) {
+            setError('Failed to fetch user profile.');
+        }
+    };
+
+    useEffect(() => {
+        fetchUserProfile();
+    }, []); // Fetch user profile data on component mount
+
+    const handlePasswordChange = () => {
+        navigate('/change-password');
+    };
+
+    const handleUploadProfilePicture = () => {
+        // Handle profile picture upload logic
+        // You can implement this based on your specific requirements
+    };
 
     const handleSubmit = async ev => {
         ev.preventDefault();
 
-        // Check if new password matches confirmation
-        if (newPassword !== confirmPassword) {
-            setPasswordMismatch(true);
-            return;
-        }
-
         try {
-            const request = await axios.post("/auth/change-password", {
-                oldPassword,
-                newPassword
+            const request = await axios.post("/auth/update-profile", {
+                username,
+                email
             });
 
             if (request.status === 200) {
                 const requestedToken = request.data.access_token;
                 setToken(requestedToken);
-                setPasswordChanged(true);
+                setProfileUpdated(true);
             }
         } catch (err) {
-            setError('Failed to change password. Please try again.');
+            setError('Failed to update profile. Please try again.');
         }
     }
 
     return (
         <form onSubmit={handleSubmit}>
             <Container
-                component="change_password"
+                component="profile_settings"
                 maxWidth="sm"
                 width="100%"
                 height="100%"
@@ -77,14 +94,8 @@ const ChangePassword = () => {
                     },
                     padding: 3,
                 }}>
-                    <Typography variant="h5">Change Password</Typography>
+                    <Typography variant="h5">Profile Settings</Typography>
                     <Divider sx={{ marginTop: 1}} />
-
-                    {passwordMismatch && (
-                        <Alert severity="error" sx={{ marginTop: 2 }}>
-                            Passwords do not match. Please try again.
-                        </Alert>
-                    )}
 
                     {error && (
                         <Alert severity="error" sx={{ marginTop: 2 }}>
@@ -92,44 +103,40 @@ const ChangePassword = () => {
                         </Alert>
                     )}
 
-                    {passwordChanged && (
+                    {profileUpdated && (
                         <Alert severity="success" sx={{ marginTop: 2 }}>
-                            Password changed successfully.
+                            Profile updated successfully.
                         </Alert>
                     )}
-
+                    <Button
+                        variant="outlined"
+                        color="primary"
+                        onClick={handleUploadProfilePicture}
+                        sx={{ marginTop: 2 }}
+                    >
+                        Upload Profile Picture
+                    </Button>
                     <TextField
                         sx={{
                             marginTop: 2,
                         }}
-                        id="oldPassword"
-                        label="Old Password"
+                        id="username"
+                        label="Username"
                         variant="outlined"
                         size="small"
-                        type="password"
-                        onChange={ev => setOldPassword(ev.target.value)}
+                        value={username}
+                        onChange={ev => setUsername(ev.target.value)}
                     />
                     <TextField
                         sx={{
                             marginTop: 2,
                         }}
-                        id="newPassword"
-                        label="New Password"
+                        id="email"
+                        label="Email"
                         variant="outlined"
                         size="small"
-                        type="password"
-                        onChange={ev => setNewPassword(ev.target.value)}
-                    />
-                    <TextField
-                        sx={{
-                            marginTop: 2,
-                        }}
-                        id="confirmPassword"
-                        label="Confirm New Password"
-                        variant="outlined"
-                        size="small"
-                        type="password"
-                        onChange={ev => setConfirmPassword(ev.target.value)}
+                        value={email}
+                        onChange={ev => setEmail(ev.target.value)}
                     />
 
                     <Button
@@ -137,12 +144,23 @@ const ChangePassword = () => {
                         variant="contained"
                         sx={{ marginTop: 2 }}    
                     >
+                        Update Profile
+                    </Button>
+
+                    <Button
+                        variant="outlined"
+                        color="primary"
+                        onClick={handlePasswordChange}
+                        sx={{ marginTop: 2 }}
+                    >
                         Change Password
                     </Button>
+
+                    
                 </Paper>
             </Container>
         </form>
     );
 }
 
-export default ChangePassword;
+export default ProfileSettings;

@@ -10,7 +10,11 @@ import {
 } from 'react-router-dom'
 import Signin from "./components/Signin";
 import ForgotPassword from "./components/ForgotPassword";
+import ProfileSettings from "./components/ProfileSettings";
 import ChangePassword from "./components/ChangePassword";
+import Feedback from "./components/Feedback";
+import InvoiceHistory from "./components/InvoiceHistory";
+import ReservationHistory from "./components/ReservationHistory";
 import { ContextProvider } from "./context/ContextProvider";
 import Home from "./components/Home";
 import Footer from "./components/Footer";
@@ -48,7 +52,23 @@ const router = createBrowserRouter([
       {
         path: "/change-password",
         element: <ChangePassword />
-      },      
+      },    
+      {
+        path: "/profile-settings",
+        element: <ProfileSettings />
+      }, 
+      {
+        path: "/feedback",
+        element: <Feedback />
+      },   
+      {
+        path: "/invoice-history",
+        element: <InvoiceHistory />
+      },
+      {
+        path: "/reservation-history",
+        element: <ReservationHistory />
+      },
       {
         path: "/contact",
         element: <></>  
