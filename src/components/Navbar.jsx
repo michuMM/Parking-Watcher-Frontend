@@ -45,7 +45,7 @@ const Navbar = () => {
         const request = await axios.post('/auth/logout');
         if(request.status === 200) {
             logoutUser();
-            navigate('/');
+            navigate('/home');
         }
     }
 

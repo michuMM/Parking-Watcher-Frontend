@@ -119,7 +119,7 @@ const Signin = () => {
                         Not a member? <a href="/signup">Signup now</a> 
                     </Typography>
                     {successfulSignIn && (
-                        <Navigate to="/" />
+                        <Navigate to="/home" />
                     )}
                 </Paper>
             </Container>

@@ -1,14 +1,14 @@
-import Navbar from "./components/Navbar"
+import Navbar from "./components/Navbar";
 import { ThemeProvider } from '@mui/material/styles';
-import './index.css'
+import './index.css';
 import Signup from "./components/Signup";
-import theme from './theme/theme'
+import theme from './theme/theme';
 import { 
   createBrowserRouter,
   RouterProvider,
   Outlet,
   
-} from 'react-router-dom'
+} from 'react-router-dom';
 import Signin from "./components/Signin";
 import ForgotPassword from "./components/ForgotPassword";
 import ProfileSettings from "./components/ProfileSettings";
@@ -19,6 +19,7 @@ import ReservationHistory from "./components/ReservationHistory";
 import { ContextProvider } from "./context/ContextProvider";
 import Home from "./components/Home";
 import Footer from "./components/Footer";
+import Dashboard from './components/Dashboard';
 
 const Layout = () => (
   <>
@@ -37,7 +38,6 @@ const router = createBrowserRouter([
         path: "/home",
         element: <>
           <Home/>
-          <Footer />
         </>
       },
       {
