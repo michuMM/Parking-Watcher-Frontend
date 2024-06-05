@@ -27,20 +27,28 @@ const Signin = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [successfulSignIn, setSuccessfulSignIn] = useState(false);
+    const [error, setError] = useState(null);
 
     const locationData = useLocation();
 
     const handleSubmit = async ev => {
+        if(error) setError(null)
         ev.preventDefault();
-        const request = await axios.post("/auth/login",
-        {
-            email,
-            password
-        });
-        if(request.status == 200) {
-            const requestedToken = request.data.access_token;
-            setToken(requestedToken);
-            setSuccessfulSignIn(true);
+        try {
+            const request = await axios.post("/auth/login",
+            {
+                email,
+                password
+            });
+            if(request.status == 200) {
+                const requestedToken = request.data.access_token;
+                setToken(requestedToken);
+                console.log(requestedToken)
+                setSuccessfulSignIn(true);
+            }
+        }
+        catch(err) {
+            setError(err.response.data.message);
         }
     }
 
@@ -75,6 +83,16 @@ const Signin = () => {
                             }}
                         >
                             Account created successfully! Now you can sign in
+                        </Alert>
+                    </> : <></>} 
+                    {error ? <>
+                        <Alert 
+                            severity="error"
+                            sx={{
+                                marginTop: 2
+                            }}
+                        >
+                            {error}
                         </Alert>
                     </> : <></>} 
 

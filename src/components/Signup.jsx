@@ -9,7 +9,8 @@ import {
     TextField,
     Divider,
     //Alert,
-    Button
+    Button,
+    Alert
 } from '@mui/material'
 import * as yup from "yup"
 import { 
@@ -42,7 +43,6 @@ const Signup = () => {
     useEffect(() => {
         if(userToken) navigate('/')
     });
-
     const [formData, setFormData] = useState({
         username: "",
         email: "",
@@ -51,6 +51,7 @@ const Signup = () => {
         confirmPassword: "",
     });
     const [errors, setErrors] = useState({});
+    const [serverError, setServerError] = useState(false);
     const [successfullSignUp, setSuccessfullSignUp] = useState(false);
 
     const uppercaseFirstLetter = str => str ? str.charAt(0).toUpperCase() + str.slice(1) : "";
@@ -65,6 +66,7 @@ const Signup = () => {
     };
     
     const handleSubmit = async ev => {
+        if(serverError) setServerError(false);
         ev.preventDefault();
     
         try {
@@ -83,8 +85,11 @@ const Signup = () => {
             }
     
         } catch (error) {
+            console.log(error)
             const newErrors = {};
-            console.log(error)    
+            if(error.response?.status === 409 && !(error instanceof yup.ValidationError)) {
+                setServerError(error.response.data.message);
+            }    
             error.inner.forEach(err => newErrors[err.path] = err.message);
             
             setErrors(newErrors);
@@ -114,6 +119,18 @@ const Signup = () => {
                 }}>
                     <Typography variant="h5">Sign Up</Typography>
                     <Divider sx={{ marginTop: 1 }} />
+                    {
+                        serverError && 
+                        <Alert 
+                                severity="error"
+                                sx={{
+                                    marginTop: 2
+                                }}
+                            >
+                                {serverError}
+                        </Alert>
+                    }
+
                     <TextField sx={{
                             marginTop: 2,
                     }} 

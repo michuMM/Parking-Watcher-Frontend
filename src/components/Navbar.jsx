@@ -68,8 +68,9 @@ const Navbar = () => {
                                 xs: 1
                             }
                         }}>
-                            <img src={logo} width={200} alt="logo" />
-
+                            <Link to="/">
+                                <img src={logo} width={200} alt="logo" />
+                            </Link>
                         </Container>
                         <Box sx={{ 
                             flexGrow: 1, 

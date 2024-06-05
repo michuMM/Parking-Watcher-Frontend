@@ -7,6 +7,7 @@ import {
   createBrowserRouter,
   RouterProvider,
   Outlet,
+  Navigate
   
 } from 'react-router-dom';
 import Signin from "./components/Signin";
@@ -35,10 +36,14 @@ const router = createBrowserRouter([
     element: <Layout />,
     children: [
       {
-        path: "/home",
+        path: "/",
         element: <>
           <Home/>
         </>
+      },
+      {
+        path: "/home",
+        element: <Home />
       },
       {
         path: "/signup",
