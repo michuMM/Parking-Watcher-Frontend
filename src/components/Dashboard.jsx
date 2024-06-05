@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import axios from '../lib/axios';
 import { Audio } from 'react-loader-spinner';
-import { Box, Card, CardContent, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import LoggedUser from './LoggedUser';
 import ReservationsPage from './ReservationsPage';
 import HistoryPage from './HistoryPage';
 import SettingsPage from './SettingsPage';
-import { getContext } from '../context/ContextProvider'
+import { getContext } from '../context/ContextProvider';
+import DashboardPage from './DashboardPage';
 
 const Dashboard = () => {
   const [userData, setUserData] = useState(null);
@@ -55,30 +56,11 @@ const Dashboard = () => {
             wrapperClass
           />
         </Box>
-      ) : <Navigate to="/home" />}
+      ) : (
+        <Navigate to="/home" />
+      )}
     </>
   );
 };
-
-const DashboardPage = ({ userData }) => (
-  <Card
-    sx={{
-      textAlign: 'center',
-      minWidth: { xs: 280, sm: 500 },
-    }}
-  >
-    <CardContent>
-      <Typography variant="h4" sx={{ fontSize: 36 }}>
-        Hello
-      </Typography>
-      <Typography variant="h5" component="div">
-        {userData.name}
-      </Typography>
-      <Typography sx={{ mb: 1.5 }} color="text.secondary">
-        {userData.email}
-      </Typography>
-    </CardContent>
-  </Card>
-);
 
 export default Dashboard;
