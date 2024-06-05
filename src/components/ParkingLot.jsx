@@ -123,7 +123,7 @@ const ParkingLot = () => {
         </Select>
       </FormControl>
 
-      <Box sx={{ mt: 2, overflowY: 'auto', maxHeight: '70vh' }}>
+      <Box sx={{ mt: 2, overflowY: 'auto', maxHeight: 'calc(100vh - 150px)', padding: '10px', boxSizing: 'border-box' }}>
         <Grid container spacing={2} justifyContent="center">
           <Grid item xs={12} sm={5}>
             <Grid container spacing={2} justifyContent="center">
