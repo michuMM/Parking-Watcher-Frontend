@@ -110,59 +110,70 @@ const ParkingLot = () => {
   );
 
   return (
-    <Box sx={{ p: 3 }}>
-      <FormControl sx={{ minWidth: 120, mb: 2 }}>
-        <InputLabel id="floor-select-label" sx={{ marginTop: '-10px' }}>Floor</InputLabel>
-        <Select
-          value={selectedFloor}
-          onChange={(e) => setSelectedFloor(e.target.value)}
+    <Box sx={{ height: '100%', overflowY: 'auto' }}>
+      <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <FormControl sx={{ minWidth: 120, mb: 2 }}>
+          <InputLabel id="floor-select-label" sx={{ marginTop: '-10px' }}>Floor</InputLabel>
+          <Select
+            value={selectedFloor}
+            onChange={(e) => setSelectedFloor(e.target.value)}
+          >
+            <MenuItem value="ground">Ground Floor</MenuItem>
+            <MenuItem value="first">First Floor</MenuItem>
+            <MenuItem value="second">Second Floor</MenuItem>
+          </Select>
+        </FormControl>
+
+        <Box
+          sx={{
+            mt: 2,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: '100%',
+          }}
         >
-          <MenuItem value="ground">Ground Floor</MenuItem>
-          <MenuItem value="first">First Floor</MenuItem>
-          <MenuItem value="second">Second Floor</MenuItem>
-        </Select>
-      </FormControl>
-
-      <Box sx={{ mt: 2, overflowY: 'auto', maxHeight: 'calc(100vh - 150px)', padding: '10px', boxSizing: 'border-box' }}>
-        <Grid container spacing={2} justifyContent="center">
-          <Grid item xs={12} sm={5}>
-            <Grid container spacing={2} justifyContent="center">
-              {floorsData[selectedFloor].slice(0, 10).map(renderSpace)}
+          <Grid container spacing={2} justifyContent="center">
+            <Grid item xs={12} sm={5}>
+              <Grid container spacing={2} justifyContent="center">
+                {floorsData[selectedFloor].slice(0, 10).map(renderSpace)}
+              </Grid>
             </Grid>
-          </Grid>
-          <Grid item xs={12} sm={2} sx={{ textAlign: 'center', display: 'flex', alignItems: 'center' }}>
-            <Box sx={{ display: { xs: 'none', sm: 'flex' }, flexDirection: 'column', alignItems: 'center', height: '100%' }}>
-              <Typography variant="body1">ENTRY</Typography>
-              <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                <Box sx={{ borderLeft: '2px dashed #ccc', height: '100%' }}></Box>
+            <Grid item xs={12} sm={2} sx={{ textAlign: 'center', display: 'flex', alignItems: 'center' }}>
+              <Box sx={{ display: { xs: 'none', sm: 'flex' }, flexDirection: 'column', alignItems: 'center', height: '100%' }}>
+                <Typography variant="body1">ENTRY</Typography>
+                <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                  <Box sx={{ borderLeft: '2px dashed #ccc', height: '100%' }}></Box>
+                </Box>
+                <Typography variant="body1">EXIT</Typography>
               </Box>
-              <Typography variant="body1">EXIT</Typography>
-            </Box>
-            <Box sx={{ display: { xs: 'flex', sm: 'none' }, flexDirection: 'column', alignItems: 'center', width: '100%' }}>
-              <Typography variant="body1">ENTRY</Typography>
-              <Box sx={{ borderTop: '2px dashed #ccc', width: '100%', my: 1 }}></Box>
-              <Typography variant="body1">EXIT</Typography>
-            </Box>
-          </Grid>
-          <Grid item xs={12} sm={5}>
-            <Grid container spacing={2} justifyContent="center">
-              {floorsData[selectedFloor].slice(10).map(renderSpace)}
+              <Box sx={{ display: { xs: 'flex', sm: 'none' }, flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+                <Typography variant="body1">ENTRY</Typography>
+                <Box sx={{ borderTop: '2px dashed #ccc', width: '100%', my: 1 }}></Box>
+                <Typography variant="body1">EXIT</Typography>
+              </Box>
+            </Grid>
+            <Grid item xs={12} sm={5}>
+              <Grid container spacing={2} justifyContent="center">
+                {floorsData[selectedFloor].slice(10).map(renderSpace)}
+              </Grid>
             </Grid>
           </Grid>
-        </Grid>
 
-        <Modal open={open} onClose={handleClose}>
-          <Box sx={{ p: 4, backgroundColor: 'white', margin: 'auto', mt: 10 }}>
-            {selectedSpace && (
-              <>
-                <Typography variant="h6">Space Details</Typography>
-                <Typography>ID: {selectedSpace.id}</Typography>
-                <Typography>Number: {selectedSpace.number}</Typography>
-                <Typography>Occupied: {selectedSpace.occupied ? 'Yes' : 'No'}</Typography>
-              </>
-            )}
-          </Box>
-        </Modal>
+          <Modal open={open} onClose={handleClose}>
+            <Box sx={{ p: 4, backgroundColor: 'white', margin: 'auto', mt: 10 }}>
+              {selectedSpace && (
+                <>
+                  <Typography variant="h6">Space Details</Typography>
+                  <Typography>ID: {selectedSpace.id}</Typography>
+                  <Typography>Number: {selectedSpace.number}</Typography>
+                  <Typography>Occupied: {selectedSpace.occupied ? 'Yes' : 'No'}</Typography>
+                </>
+              )}
+            </Box>
+          </Modal>
+        </Box>
       </Box>
     </Box>
   );

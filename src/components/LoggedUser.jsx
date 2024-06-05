@@ -2,8 +2,6 @@ import React from "react";
 import { Link, Outlet } from "react-router-dom";
 import {
   Box,
-  Card,
-  CardContent,
   Typography,
   CssBaseline,
   List,
@@ -28,7 +26,7 @@ const LoggedUser = ({ userData }) => {
       display="flex"
       justifyContent="center"
       alignItems="center"
-      minHeight="95vh"
+      minHeight="100vh"
       sx={{ backgroundColor: "#f0f0f0" }}
     >
       <Box
@@ -204,7 +202,7 @@ const LoggedUser = ({ userData }) => {
             flexDirection: "column",
             bgcolor: "white",
             overflowY: "auto", // Ensure scrolling
-            maxHeight: "85vh", // Ensure the main section has a maximum height to trigger scrolling
+            height: "100%", // Ensure the main section has a maximum height to trigger scrolling
           }}
         >
           <Outlet />
