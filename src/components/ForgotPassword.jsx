@@ -10,7 +10,6 @@ import {
 } from "@mui/material";
 import { 
     useLocation,
-    Navigate,
     useNavigate
  } from 'react-router-dom'
 import axios from '../lib/axios'

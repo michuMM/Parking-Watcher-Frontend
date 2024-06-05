@@ -8,7 +8,6 @@ import {
   RouterProvider,
   Outlet,
   Navigate
-  
 } from 'react-router-dom';
 import Signin from "./components/Signin";
 import ForgotPassword from "./components/ForgotPassword";
@@ -19,13 +18,12 @@ import InvoiceHistory from "./components/InvoiceHistory";
 import ReservationHistory from "./components/ReservationHistory";
 import { ContextProvider } from "./context/ContextProvider";
 import Home from "./components/Home";
-import Footer from "./components/Footer";
 import Dashboard from './components/Dashboard';
+
 
 const Layout = () => (
   <>
     <Navbar />
-    
     <Outlet />
   </>
 );
@@ -37,9 +35,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <>
-          <Home/>
-        </>
+        element: <Home />
       },
       {
         path: "/home",
@@ -84,6 +80,10 @@ const router = createBrowserRouter([
       {  
         path: "/about",
         element: <></>
+      },
+      {
+        path: "/dashboard/*",
+        element: <Dashboard />
       }
     ]
   },

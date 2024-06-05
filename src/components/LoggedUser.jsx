@@ -1,4 +1,5 @@
 import React from "react";
+import { Link, Outlet } from "react-router-dom";
 import {
   Box,
   Card,
@@ -19,7 +20,7 @@ import {
   Dashboard,
 } from "@mui/icons-material";
 
-const drawerWidth = 310;
+const drawerWidth = 360;
 
 const LoggedUser = ({ userData }) => {
   return (
@@ -45,28 +46,28 @@ const LoggedUser = ({ userData }) => {
         <CssBaseline />
         <Box
           sx={{
-            width: { xs: 60, sm: drawerWidth }, 
+            width: { xs: 80, sm: drawerWidth },
             bgcolor: "#3f51b5",
             color: "white",
             display: "flex",
             flexDirection: "column",
-            alignItems: "center",
+            alignItems: { xs: "center", sm: "flex-start" },
             p: 2,
           }}
         >
           <Box
             sx={{
-              width: 60,
-              height: 60,
+              width: { xs: 50, sm: 60 },
+              height: { xs: 50, sm: 60 },
               mb: 2,
-              display: { xs: "none", sm: "flex" },
+              display: "flex",
               justifyContent: "center",
               alignItems: "center",
               borderRadius: "50%",
               bgcolor: "#3f51b5",
             }}
           >
-            <Avatar sx={{ width: 50, height: 50 }} />
+            <Avatar sx={{ width: { xs: 40, sm: 50 }, height: { xs: 40, sm: 50 } }} />
           </Box>
           <Typography
             variant="h6"
@@ -85,13 +86,13 @@ const LoggedUser = ({ userData }) => {
               width: "100%",
               display: "flex",
               flexDirection: "column",
-              alignItems: { xs: "center", sm: "flex-start" },
               mt: { xs: 2, sm: 0 },
             }}
           >
             <ListItem
               button
-              key="Dashboard"
+              component={Link}
+              to="/dashboard"
               sx={{
                 display: "flex",
                 justifyContent: { xs: "center", sm: "flex-start" },
@@ -116,7 +117,8 @@ const LoggedUser = ({ userData }) => {
             </ListItem>
             <ListItem
               button
-              key="Reservations"
+              component={Link}
+              to="/dashboard/reservations"
               sx={{
                 display: "flex",
                 justifyContent: { xs: "center", sm: "flex-start" },
@@ -141,7 +143,8 @@ const LoggedUser = ({ userData }) => {
             </ListItem>
             <ListItem
               button
-              key="History"
+              component={Link}
+              to="/dashboard/history"
               sx={{
                 display: "flex",
                 justifyContent: { xs: "center", sm: "flex-start" },
@@ -166,7 +169,8 @@ const LoggedUser = ({ userData }) => {
             </ListItem>
             <ListItem
               button
-              key="Settings"
+              component={Link}
+              to="/dashboard/settings"
               sx={{
                 display: "flex",
                 justifyContent: { xs: "center", sm: "flex-start" },
@@ -202,24 +206,7 @@ const LoggedUser = ({ userData }) => {
             bgcolor: "white",
           }}
         >
-          <Card
-            sx={{
-              textAlign: "center",
-              minWidth: { xs: 280, sm: 500 },
-            }}
-          >
-            <CardContent>
-              <Typography variant="h4" sx={{ fontSize: 36 }}>
-                Hello
-              </Typography>
-              <Typography variant="h5" component="div">
-                {userData.name}
-              </Typography>
-              <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                {userData.email}
-              </Typography>
-            </CardContent>
-          </Card>
+          <Outlet />
         </Box>
       </Box>
     </Box>
