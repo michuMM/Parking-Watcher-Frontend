@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useState } from "react";
 import {
   Typography,
   Box,
@@ -13,6 +13,8 @@ import {
   ListItemAvatar,
   ListItemText,
   Divider,
+  TextField,
+  Paper,
 } from "@mui/material";
 import { getContext } from "../context/ContextProvider";
 import backgroundImg from "../assets/background.jpg";
@@ -71,6 +73,70 @@ const Home = () => {
 
   const { userToken } = getContext();
 
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+
+  const [errors, setErrors] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+
+  const validateName = (name) => {
+    const regex = /^[A-Za-z\s]{3,}$/;
+    return regex.test(name) ? "" : "Name must be at least 3 characters long and contain only letters.";
+  };
+
+  const validateEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email) ? "" : "Invalid email address.";
+  };
+
+  const validateMessage = (message) => {
+    return message.length <= 600 ? "" : "Message must be 600 characters or less.";
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+
+    // Validate fields on change
+    let error = "";
+    if (name === "name") error = validateName(value);
+    if (name === "email") error = validateEmail(value);
+    if (name === "message") error = validateMessage(value);
+    setErrors({
+      ...errors,
+      [name]: error,
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Final validation before submitting
+    const nameError = validateName(formData.name);
+    const emailError = validateEmail(formData.email);
+    const messageError = validateMessage(formData.message);
+
+    if (nameError || emailError || messageError) {
+      setErrors({
+        name: nameError,
+        email: emailError,
+        message: messageError,
+      });
+      return;
+    }
+
+    // handle form submission logic here
+  };
+
   return (
     <>
       {userToken ? (
@@ -107,7 +173,7 @@ const Home = () => {
                     md: 52,
                   },
                 }}
-                variant="title"
+                variant="h1"
               >
                 Forget about parking - reserve <br /> online and save time!{" "}
                 <br />
@@ -118,7 +184,7 @@ const Home = () => {
                   fontSize: 20,
                   lineHeight: "1.3",
                 }}
-                variant="paragraph"
+                variant="body1"
               >
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
                 eiusmod tempor incididunt ut labore et dolore magna <br />
@@ -146,7 +212,7 @@ const Home = () => {
             }}
           >
             <Typography
-              variant="title"
+              variant="h2"
               sx={{
                 fontSize: 42,
               }}
@@ -177,7 +243,7 @@ const Home = () => {
                     >
                       Choose desired location
                     </Typography>
-                    <Typography variant="paragraph">
+                    <Typography variant="body2">
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                       Nullam id velit non nisi scelerisque pellentesque.
                       Phasellus vel orci et lacus pellentesque pretium. Duis
@@ -207,7 +273,7 @@ const Home = () => {
                     >
                       Choose a suitable date
                     </Typography>
-                    <Typography variant="paragraph">
+                    <Typography variant="body2">
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                       Nullam id velit non nisi scelerisque pellentesque.
                       Phasellus vel orci et lacus pellentesque pretium. Duis
@@ -237,7 +303,7 @@ const Home = () => {
                     >
                       Safely park your car
                     </Typography>
-                    <Typography variant="paragraph">
+                    <Typography variant="body2">
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                       Nullam id velit non nisi scelerisque pellentesque.
                       Phasellus vel orci et lacus pellentesque pretium. Duis
@@ -261,7 +327,7 @@ const Home = () => {
             }}
           >
             <Typography
-              variant="title"
+              variant="h2"
               sx={{
                 fontSize: 42,
                 color: "white",
@@ -279,7 +345,7 @@ const Home = () => {
               <Grid item xs={11} md={6} backgroundColor="white">
                 <List dense>
                   {items.map((item) => (
-                    <>
+                    <div key={item.id}>
                       <ListItem>
                         <ListItemAvatar>
                           <Avatar src={item.image}>
@@ -292,12 +358,84 @@ const Home = () => {
                         />
                       </ListItem>
                       <Divider />
-                    </>
+                    </div>
                   ))}
                 </List>
               </Grid>
             </Grid>
             <Map />
+          </Box>
+          <Box
+            component={Paper}
+            sx={{
+              py: 8,
+              minHeight: "35vh",
+              textAlign: "center",
+              backgroundColor: "#f3f6f8",
+              padding: 3,
+              marginTop: 4,
+            }}
+          >
+            <Typography
+              variant="h2"
+              sx={{
+                fontSize: 42,
+                marginBottom: 3,
+              }}
+            >
+              Contact Us
+            </Typography>
+            <Box
+              component="form"
+              onSubmit={handleSubmit}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <TextField
+                name="name"
+                label="Name"
+                variant="outlined"
+                value={formData.name}
+                onChange={handleChange}
+                error={Boolean(errors.name)}
+                helperText={errors.name}
+                sx={{ marginBottom: 2, width: "80%" }}
+              />
+              <TextField
+                name="email"
+                label="Email"
+                type="email"
+                variant="outlined"
+                value={formData.email}
+                onChange={handleChange}
+                error={Boolean(errors.email)}
+                helperText={errors.email}
+                sx={{ marginBottom: 2, width: "80%" }}
+              />
+              <TextField
+                name="message"
+                label="Message"
+                variant="outlined"
+                value={formData.message}
+                onChange={handleChange}
+                error={Boolean(errors.message)}
+                helperText={errors.message}
+                multiline
+                rows={4}
+                sx={{ marginBottom: 2, width: "80%" }}
+              />
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                sx={{ width: "80%" }}
+              >
+                Send Message
+              </Button>
+            </Box>
           </Box>
           <Footer />
         </>
