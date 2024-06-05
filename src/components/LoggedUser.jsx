@@ -201,9 +201,10 @@ const LoggedUser = ({ userData }) => {
             flexGrow: 1,
             p: 3,
             display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
+            flexDirection: "column",
             bgcolor: "white",
+            overflowY: "auto", // Ensure scrolling
+            maxHeight: "85vh", // Ensure the main section has a maximum height to trigger scrolling
           }}
         >
           <Outlet />
