@@ -9,6 +9,8 @@ import {
   ListItem,
   ListItemText,
   Divider,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 
 const mockReservations = [
@@ -84,42 +86,48 @@ const mockReservations = [
   },
 ];
 
-const HistoryPage = () => (
-  <Box sx={{ padding: 3 }}>
-    <Typography variant="h4" gutterBottom>
-      Reservation History
-    </Typography>
-    <Grid container spacing={2}>
-      {mockReservations.map((reservation) => (
-        <Grid item xs={12} sm={6} md={4} key={reservation.id}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6" color="textPrimary" gutterBottom>
-                Reservation #{reservation.id}
-              </Typography>
-              <List dense>
-                <ListItem>
-                  <ListItemText primary="Date" secondary={reservation.date} />
-                </ListItem>
-                <Divider />
-                <ListItem>
-                  <ListItemText primary="Time" secondary={reservation.time} />
-                </ListItem>
-                <Divider />
-                <ListItem>
-                  <ListItemText primary="Location" secondary={reservation.location} />
-                </ListItem>
-                <Divider />
-                <ListItem>
-                  <ListItemText primary="Spot" secondary={reservation.spot} />
-                </ListItem>
-              </List>
-            </CardContent>
-          </Card>
-        </Grid>
-      ))}
-    </Grid>
-  </Box>
-);
+const HistoryPage = () => {
+  const theme = useTheme();
+  const isSmDown = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMdDown = useMediaQuery(theme.breakpoints.down('md'));
+
+  return (
+    <Box sx={{ padding: isSmDown ? 2 : 3 }}>
+      <Typography variant="h4" gutterBottom>
+        Reservation History
+      </Typography>
+      <Grid container spacing={2}>
+        {mockReservations.map((reservation) => (
+          <Grid item xs={12} sm={6} md={4} key={reservation.id}>
+            <Card>
+              <CardContent>
+                <Typography variant="h6" color="textPrimary" gutterBottom>
+                  Reservation #{reservation.id}
+                </Typography>
+                <List dense>
+                  <ListItem>
+                    <ListItemText primary="Date" secondary={reservation.date} />
+                  </ListItem>
+                  <Divider />
+                  <ListItem>
+                    <ListItemText primary="Time" secondary={reservation.time} />
+                  </ListItem>
+                  <Divider />
+                  <ListItem>
+                    <ListItemText primary="Location" secondary={reservation.location} />
+                  </ListItem>
+                  <Divider />
+                  <ListItem>
+                    <ListItemText primary="Spot" secondary={reservation.spot} />
+                  </ListItem>
+                </List>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+    </Box>
+  );
+};
 
 export default HistoryPage;
