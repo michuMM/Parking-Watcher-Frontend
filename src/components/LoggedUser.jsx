@@ -27,6 +27,7 @@ const LoggedUser = ({ userData }) => {
       justifyContent="center"
       alignItems="center"
       minHeight="100vh"
+      marginTop={-4}
       sx={{ backgroundColor: "#f0f0f0" }}
     >
       <Box
@@ -201,8 +202,8 @@ const LoggedUser = ({ userData }) => {
             display: "flex",
             flexDirection: "column",
             bgcolor: "white",
-            overflowY: "auto", // Ensure scrolling
-            height: "100%", // Ensure the main section has a maximum height to trigger scrolling
+            overflowY: "auto", 
+            height: "100%", 
           }}
         >
           <Outlet />
