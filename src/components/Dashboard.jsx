@@ -9,6 +9,7 @@ import HistoryPage from './HistoryPage';
 import SettingsPage from './SettingsPage';
 import { getContext } from '../context/ContextProvider';
 import DashboardPage from './DashboardPage';
+import InvoicesPage from './InvoicesPage'
 
 const Dashboard = () => {
   const [userData, setUserData] = useState(null);
@@ -33,6 +34,7 @@ const Dashboard = () => {
             <Route path="reservations" element={<ReservationsPage />} />
             <Route path="history" element={<HistoryPage />} />
             <Route path="settings" element={<SettingsPage />} />
+            <Route path="invoices" element={<InvoicesPage />} />
           </Route>
         </Routes>
       ) : userToken ? (

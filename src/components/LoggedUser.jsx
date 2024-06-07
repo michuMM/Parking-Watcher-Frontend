@@ -11,11 +11,11 @@ import {
   Avatar,
 } from "@mui/material";
 import {
-  AccountCircle,
   History,
   Settings,
   Event,
   Dashboard,
+  Receipt
 } from "@mui/icons-material";
 
 const drawerWidth = 360;
@@ -189,6 +189,32 @@ const LoggedUser = ({ userData }) => {
               </ListItemIcon>
               <ListItemText
                 primary="Settings"
+                sx={{ display: { xs: "none", sm: "block" } }}
+              />
+            </ListItem>
+            <ListItem
+              button
+              component={Link}
+              to="/dashboard/invoices"
+              sx={{
+                display: "flex",
+                justifyContent: { xs: "center", sm: "flex-start" },
+                mb: { xs: 2, sm: 0 },
+                width: "100%",
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: "auto",
+                  mr: { xs: 0, sm: 2 },
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                <Receipt sx={{ color: "white" }} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Invoices"
                 sx={{ display: { xs: "none", sm: "block" } }}
               />
             </ListItem>

@@ -58,13 +58,27 @@ const floorsData = {
   // Analogicznie dla pozostałych pięter...
 };
 
+const parkingLots = [
+  { id: '1', name: '55 West 46th Street - Valet Garage, New York', country: 'Stany Zjednoczone' },
+  { id: '2', name: 'Raimundo Fernández Villaverde 57 bajo, 28003 Madrid', country: 'Hiszpania' },
+  { id: '3', name: 'Royal Tulip (Warsaw) Grzybowska 49, Warszawa', country: 'Polska' },
+  { id: '4', name: 'Tiefgarage Friedrichstadt-Passagen (Q 206) Taubenstraße 14, Berlin', country: 'Niemcy' },
+  { id: '5', name: 'Barceló (Madrid) Barceló s/n, 28004 Madrid', country: 'Hiszpania' },
+  { id: '6', name: 'Parking NFM Wrocław (Wrocław) Plac Wolności 1, 50-071 Wrocław', country: 'Polska' },
+];
+
 const ParkingLot = () => {
+  const [selectedParkingLot, setSelectedParkingLot] = useState(parkingLots[0].id);
   const [selectedFloor, setSelectedFloor] = useState('ground');
   const [selectedSpace, setSelectedSpace] = useState(null);
   const [open, setOpen] = useState(false);
-  const [reservationDate, setReservationDate] = useState('');
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
+  const [startDateTime, setStartDateTime] = useState('');
+  const [endDateTime, setEndDateTime] = useState('');
+  const [filtersApplied, setFiltersApplied] = useState(false);
+
+  const handleParkingLotChange = (event) => {
+    setSelectedParkingLot(event.target.value);
+  };
 
   const handleSpaceClick = (space) => {
     setSelectedSpace(space);
@@ -77,28 +91,19 @@ const ParkingLot = () => {
   };
 
   const handleReserve = () => {
-    // Tutaj możesz dodać logikę rezerwacji miejsca
     alert(`Space ${selectedSpace.number} reserved!`);
     handleClose();
   };
 
-  const handleDateChange = (event) => {
-    setReservationDate(event.target.value);
-  };
-
-  const handleStartTimeChange = (event) => {
-    setStartTime(event.target.value);
-  };
-
-  const handleEndTimeChange = (event) => {
-    setEndTime(event.target.value);
+  const applyFilters = () => {
+    setFiltersApplied(true);
   };
 
   const isSpaceAvailable = (space) => {
-    if (!reservationDate || !startTime || !endTime) return true;
+    if (!startDateTime || !endDateTime) return true;
 
-    const reservationStart = new Date(`${reservationDate}T${startTime}`);
-    const reservationEnd = new Date(`${reservationDate}T${endTime}`);
+    const reservationStart = new Date(startDateTime);
+    const reservationEnd = new Date(endDateTime);
 
     for (const reservation of space.reservations) {
       const resStart = new Date(reservation.start);
@@ -144,169 +149,185 @@ const ParkingLot = () => {
   };
 
   const renderPillars = () => {
+    if (!filtersApplied) return null;
+
     const pillars = Array.from(new Set(floorsData[selectedFloor].map(space => space.pillar)));
-    return pillars.map((pillar, index) => (
-      <React.Fragment key={pillar}>
-        <Grid item xs={12} sm={2}>
-          <Typography marginBottom={2} variant="h6" align="center">Pillar {pillar}</Typography>
-          <Grid container spacing={2} justifyContent="center">
-            {floorsData[selectedFloor].filter(space => space.pillar === pillar).map(renderSpace)}
+    return (
+      <Grid container spacing={2} justifyContent="center" sx={{ width: '100%', mt: 2 }}>
+        {pillars.map((pillar, index) => (
+          <Grid item xs={12} sm={6} md={3} key={pillar}>
+            <Typography marginBottom={2} variant="h6" align="center">Pillar {pillar}</Typography>
+            <Grid container spacing={2} justifyContent="center">
+              {floorsData[selectedFloor].filter(space => space.pillar === pillar).map(renderSpace)}
+            </Grid>
           </Grid>
-        </Grid>
-        {index < pillars.length - 1 && (
-          <Grid item xs={12} sm={1} key={`separator-${pillar}`}>
-            <Box sx={{ borderLeft: '2px dashed #ccc', height: '100%' }}></Box>
-          </Grid>
-        )}
-      </React.Fragment>
-    ));
+        ))}
+      </Grid>
+    );
   };
 
   return (
-    <Box sx={{ height: '100%', overflowY: 'auto' }}>
-      <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <FormControl sx={{ minWidth: 120, mb: 2 }}>
-          <InputLabel id="floor-select-label" sx={{ marginTop: '-10px' }}>Floor</InputLabel>
-          <Select
-            value={selectedFloor}
-            onChange={(e) => setSelectedFloor(e.target.value)}
+    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+      <Grid container spacing={2} justifyContent="center" sx={{ width: '100%' }}>
+        <Grid item xs={12} sm={6} lg={3}>
+          <FormControl fullWidth>
+            <InputLabel id="parking-lot-select-label">Parking</InputLabel>
+            <Select
+              value={selectedParkingLot}
+              onChange={handleParkingLotChange}
+            >
+              {parkingLots.map((lot) => (
+                <MenuItem key={lot.id} value={lot.id}>{lot.name} ({lot.country})</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} sm={6} lg={3}>
+          {
+            filtersApplied && 
+            <FormControl fullWidth>
+              <InputLabel id="floor-select-label">Piętro</InputLabel>
+              <Select
+                value={selectedFloor}
+                onChange={(e) => setSelectedFloor(e.target.value)}
+              >
+                <MenuItem value="ground">Parter</MenuItem>
+                <MenuItem value="first">Pierwsze piętro</MenuItem>
+                <MenuItem value="second">Drugie piętro</MenuItem>
+              </Select>
+            </FormControl>
+
+          }
+        </Grid>
+      </Grid>
+
+      <Grid container spacing={2} justifyContent="center" sx={{ mt: 2, width: '100%' }}>
+        <Grid item xs={12} sm={6} lg={3}>
+          <TextField
+            label="Data i godzina rozpoczęcia"
+            type="datetime-local"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            value={startDateTime}
+            onChange={(e) => setStartDateTime(e.target.value)}
+            fullWidth
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} lg={3}>
+          <TextField
+            label="Data i godzina zakończenia"
+            type="datetime-local"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            value={endDateTime}
+            onChange={(e) => setEndDateTime(e.target.value)}
+            fullWidth
+          />
+        </Grid>
+        <Grid 
+          item 
+          xs={12} 
+          sm={6} 
+          lg={3} 
+          sx={{ mt: { xs: 2, lg: 0 }, display: 'flex', alignItems: 'center' }}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={applyFilters}
+            sx={{ height: '100%', width: { xs: '100%', sm: '100%', lg: 'auto' } }}
           >
-            <MenuItem value="ground">Ground Floor</MenuItem>
-            <MenuItem value="first">First Floor</MenuItem>
-            <MenuItem value="second">Second Floor</MenuItem>
-          </Select>
-        </FormControl>
-
-        <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-          <TextField
-            label="Reservation Date"
-            type="date"
-            InputLabelProps={{
-              shrink: true,
-            }}
-            value={reservationDate}
-            onChange={handleDateChange}
-          />
-          <TextField
-            label="Start Time"
-            type="time"
-            InputLabelProps={{
-              shrink: true,
-            }}
-            value={startTime}
-            onChange={handleStartTimeChange}
-          />
-          <TextField
-            label="End Time"
-            type="time"
-            InputLabelProps={{
-              shrink: true,
-            }}
-            value={endTime}
-            onChange={handleEndTimeChange}
-          />
-        </Box>
-
-        <Box
+            Zastosuj filtry
+          </Button>
+        </Grid>
+        {renderPillars()}
+      </Grid>
+      
+      <Modal open={open} onClose={handleClose}>
+        <Box 
           sx={{
-            mt: 2,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            height: '100%',
+            p: 4,
+            backgroundColor: 'white',
+            width: '80%',
+            maxWidth: 400,
+            margin: 'auto',
+            borderRadius: 2,
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
           }}
         >
-          <Grid container spacing={2} justifyContent="center">
-            {renderPillars()}
-          </Grid>
-
-          <Modal open={open} onClose={handleClose}>
-            <Box 
-              sx={{
-                p: 4,
-                backgroundColor: 'white',
-                width: '80%',
-                maxWidth: 400,
-                margin: 'auto',
-                borderRadius: 2,
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-              }}
-            >
-              {selectedSpace && (
-                <>
-                  <Typography variant="h6">Space Details</Typography>
-                  <Typography>ID: {selectedSpace.id}</Typography>
-                  <Typography>Number: {selectedSpace.number}</Typography>
-                  <Typography>Occupied: {selectedSpace.occupied ? 'Yes' : 'No'}</Typography>
-                  {!selectedSpace.occupied ? (
-                    <Box component="form" sx={{ mt: 2 }}>
-                      <TextField
-                        fullWidth
-                        label="Your Name"
-                        margin="normal"
-                        required
-                      />
-                      <TextField
-                        fullWidth
-                        label="Your Email"
-                        margin="normal"
-                        required
-                      />
-                      <TextField
-                        fullWidth
-                        label="Reservation Date"
-                        type="date"
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        margin="normal"
-                        required
-                      />
-                      <TextField
-                        fullWidth
-                        label="Start Time"
-                        type="time"
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        margin="normal"
-                        required
-                      />
-                      <TextField
-                        fullWidth
-                        label="End Time"
-                        type="time"
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        margin="normal"
-                        required
-                      />
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        fullWidth
-                        sx={{ mt: 2 }}
-                        onClick={handleReserve}
-                      >
-                        Reserve
-                      </Button>
-                    </Box>
-                  ) : (
-                    <Typography variant="body1" sx={{ mt: 2 }}>
-                      This space is currently occupied. The next available space will be free soon.
-                    </Typography>
-                  )}
-                </>
+          {selectedSpace && (
+            <>
+              <Typography variant="h6">Szczegóły miejsca</Typography>
+              <Typography>ID: {selectedSpace.id}</Typography>
+              <Typography>Numer: {selectedSpace.number}</Typography>
+              <Typography>Zajęte: {selectedSpace.occupied ? 'Tak' : 'Nie'}</Typography>
+              {!selectedSpace.occupied ? (
+                <Box component="form" sx={{ mt: 2 }}>
+                  <TextField
+                    fullWidth
+                    label="Twoje imię"
+                    margin="normal"
+                    required
+                  />
+                  <TextField
+                    fullWidth
+                    label="Twój email"
+                    margin="normal"
+                    required
+                  />
+                  <TextField
+                    fullWidth
+                    label="Data rezerwacji"
+                    type="date"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    margin="normal"
+                    required
+                  />
+                  <TextField
+                    fullWidth
+                    label="Godzina rozpoczęcia"
+                    type="time"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    margin="normal"
+                    required
+                  />
+                  <TextField
+                    fullWidth
+                    label="Godzina zakończenia"
+                    type="time"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    margin="normal"
+                    required
+                  />
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    sx={{ mt: 2 }}
+                    onClick={handleReserve}
+                  >
+                    Zarezerwuj
+                  </Button>
+                </Box>
+              ) : (
+                <Typography variant="body1" sx={{ mt: 2 }}>
+                  To miejsce jest obecnie zajęte. Następne dostępne miejsce będzie wolne wkrótce.
+                </Typography>
               )}
-            </Box>
-          </Modal>
+            </>
+          )}
         </Box>
-      </Box>
+      </Modal>
     </Box>
   );
 };
