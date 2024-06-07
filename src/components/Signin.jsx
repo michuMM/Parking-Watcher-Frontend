@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { 
     Button, 
     Container, 
@@ -7,12 +8,49 @@ import {
     Typography,
     Alert
 } from "@mui/material";
-import { useLocation } from 'react-router-dom'
+import { 
+    useLocation,
+    Navigate,
+    useNavigate
+ } from 'react-router-dom'
+import axios from '../lib/axios'
+import { getContext } from '../context/ContextProvider';
 
 const Signin = () => {
+    const { userToken } = getContext();
+    const navigate = useNavigate();
+    useEffect(() => {
+        if(userToken) navigate('/')
+    });
+    const { setToken } = getContext(); 
+
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [successfulSignIn, setSuccessfulSignIn] = useState(false);
+    const [error, setError] = useState(null);
+
     const locationData = useLocation();
 
-    const handleSubmit = ev => ev.preventDefault();
+    const handleSubmit = async ev => {
+        if(error) setError(null)
+        ev.preventDefault();
+        try {
+            const request = await axios.post("/auth/login",
+            {
+                email,
+                password
+            });
+            if(request.status == 200) {
+                const requestedToken = request.data.access_token;
+                setToken(requestedToken);
+                console.log(requestedToken)
+                setSuccessfulSignIn(true);
+            }
+        }
+        catch(err) {
+            setError(err.response.data.message);
+        }
+    }
 
     return (
         <form onSubmit={handleSubmit}>
@@ -47,15 +85,25 @@ const Signin = () => {
                             Account created successfully! Now you can sign in
                         </Alert>
                     </> : <></>} 
+                    {error ? <>
+                        <Alert 
+                            severity="error"
+                            sx={{
+                                marginTop: 2
+                            }}
+                        >
+                            {error}
+                        </Alert>
+                    </> : <></>} 
 
                     <TextField sx={{
                         marginTop: 2,
                     }}
-                        id="username"
-                        label="Username"
+                        id="email"
+                        label="Email"
                         variant="outlined"
                         size="small"
-                        
+                        onChange={ev => setEmail(ev.target.value)}
                     />
                     <TextField
                         sx = {{
@@ -66,13 +114,14 @@ const Signin = () => {
                         variant="outlined"
                         size="small"
                         type="password"
+                        onChange={ev => setPassword(ev.target.value)}
                     />
                     <Typography
                         sx={{
                             marginTop: 1,
                         }}
                     >
-                        Forgot password?
+                        <a href="/forgot-password">Forgot password?</a>
                     </Typography>
                     <Button
                         type="submit"
@@ -87,6 +136,9 @@ const Signin = () => {
                     }}>
                         Not a member? <a href="/signup">Signup now</a> 
                     </Typography>
+                    {successfulSignIn && (
+                        <Navigate to="/home" />
+                    )}
                 </Paper>
             </Container>
         </form>
