@@ -33,8 +33,8 @@ const Dashboard = () => {
             <Route index element={<DashboardPage userData={userData} />} />
             <Route path="reservations" element={<ReservationsPage />} />
             <Route path="history" element={<HistoryPage />} />
-            <Route path="settings" element={<SettingsPage />} />
-            <Route path="invoices" element={<InvoicesPage />} />
+            <Route path="settings" element={<SettingsPage userData={userData} />} />
+            <Route path="invoices" element={<InvoicesPage userData={userData} />} />
           </Route>
         </Routes>
       ) : userToken ? (

@@ -25,36 +25,36 @@ const Footer = () => {
             justifyContent: "center",
             marginTop: 0.5
           }}>
-            <IconButton aria-label='Facebook' color='inherit'>
+            <IconButton
+              aria-label='Facebook'
+              color='inherit'
+              onClick={() => window.open('https://www.facebook.com', '_blank')}
+            >
               <FacebookIcon />
             </IconButton>
-            <IconButton aria-label='Instagram' color='inherit'>
+            <IconButton
+              aria-label='Instagram'
+              color='inherit'
+              onClick={() => window.open('https://www.instagram.com', '_blank')}
+            >
               <InstagramIcon />
             </IconButton>
-            <IconButton aria-label='X' color='inherit'>
+            <IconButton
+              aria-label='X'
+              color='inherit'
+              onClick={() => window.open('https://www.twitter.com', '_blank')} // Assuming X is Twitter
+            >
               <XIcon />
             </IconButton>
-            <IconButton aria-label='Google' color='inherit'>
-              <GoogleIcon />
-            </IconButton>
+            <IconButton
+              aria-label='Google'
+              color='inherit'
+              onClick={() => window.open('https://www.google.com', '_blank')}
+            >
+          <GoogleIcon />
+      </IconButton>
           </Box>
-          <Box sx={{
-            display: 'flex',
-            justifyContent: "center",
-            '& Button': {
-              transition: 'text-decoration 0.3s ease-in-out',
-            },
-            'Button:hover': {
-              textDecoration: "underline"
-            },
-            marginBottom: 1
-          }}>
-            <Button component={Link} to="/" color='inherit'>Home</Button>
-            <Button component={Link} to="/about" color='inherit'>About</Button>
-            <Button component={Link} to="/services" color='inherit'>Services</Button>
-            <Button component={Link} to="/team" color='inherit'>Team</Button>
-            <Button component={Link} to="/contact" color='inherit'>Contact</Button>
-          </Box>
+       
           <Divider color="white" sx={{
             width: {
               xs: "100%",

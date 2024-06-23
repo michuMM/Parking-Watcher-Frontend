@@ -1,13 +1,6 @@
-import {
-    useState,
-    useCallback,
-    memo
-} from 'react'
-import { 
-    GoogleMap, 
-    useJsApiLoader, 
-    MarkerF
-} from '@react-google-maps/api';
+import { useState, useCallback, memo } from 'react';
+import { GoogleMap, useJsApiLoader, MarkerF, InfoWindow } from '@react-google-maps/api';
+import { parkings } from '../assets/parkings';
 
 const containerStyle = {
   width: '60%',
@@ -17,65 +10,68 @@ const containerStyle = {
 };
 
 const center = {
-    lat: 52.23400351702403, 
-    lng: 20.989625109083224
+  lat: 51.1657, 
+  lng: 10.4515
 };
 
-const points = [{
-    lat: 40.757137308087444,
-    lng: -73.98104053194496
-  },{
-    lat: 40.446947557953685, 
-    lng: -3.6968993204106697
-  },{
-    lat: 52.23400351702403, 
-    lng: 20.989625109083224
-  },{
-    lat: 52.513053006644334, 
-    lng: 13.390755760522426
-  },{
-    lat: 40.426363158629044, 
-    lng: -3.7003293910016444
-  },
-  {
-    lat: 51.10689403195331, 
-    lng: 17.02921002841518
-  }
-]
+const points = parkings.map(parking => ({
+  ...parking,
+  lat: parseFloat(parking.latitude),
+  lng: parseFloat(parking.longitude)
+}));
 
-
-const MyComponent = () => {
+const Map = () => {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
-  })
+  });
 
-  const [map, setMap] = useState(null)
+  const [map, setMap] = useState(null);
+  const [selectedPoint, setSelectedPoint] = useState(null);
 
   const onLoad = useCallback(map => {
-    const bounds = new window.google.maps.LatLngBounds(center);
+    const bounds = new window.google.maps.LatLngBounds();
+    points.forEach(point => bounds.extend({ lat: point.lat, lng: point.lng }));
     map.fitBounds(bounds);
 
-    setMap(map)
-  }, [])
+    setMap(map);
+  }, [points]);
 
   const onUnmount = useCallback(map => {
-    setMap(null)
-  }, [])
+    setMap(null);
+  }, []);
 
   return isLoaded ? (
-      <GoogleMap
-        mapContainerStyle={containerStyle}
-        center={center}
-        zoom={6}
-        onLoad={onLoad}
-        onUnmount={onUnmount}
-      >
-        {
-            points.map((point, id) => <MarkerF key={id} position={point} />)
-        }
-      </GoogleMap>
-  ) : <></>
-}
+    <GoogleMap
+      mapContainerStyle={containerStyle}
+      center={center}
+      zoom={4}
+      onLoad={onLoad}
+      onUnmount={onUnmount}
+      clickableIcons={false}
+    >
+      {points.map((point, id) => (
+        <MarkerF
+          key={id}
+          position={{ lat: point.lat, lng: point.lng }}
+          onClick={() => setSelectedPoint(point)}
+        />
+      ))}
 
-export default memo(MyComponent)
+      {selectedPoint && (
+        <InfoWindow
+          position={{ lat: selectedPoint.lat, lng: selectedPoint.lng }}
+          onCloseClick={() => setSelectedPoint(null)}
+        >
+          <div>
+            <h2>{selectedPoint.name}</h2>
+            <p>{selectedPoint.address}</p>
+            <p>{selectedPoint.country}</p>
+          </div>
+        </InfoWindow>
+      )}
+    </GoogleMap>
+  ) : <></>;
+};
+
+export default memo(Map);

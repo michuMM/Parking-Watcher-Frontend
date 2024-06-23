@@ -23,7 +23,7 @@ import axios from "../lib/axios";
 
 const Navbar = () => {
     const navigate = useNavigate();
-    const pages = ["home", "about", "contact"];
+    const pages = ["home"];
     const buttons = ["Log in", "Register"];
     const { userToken, logoutUser } = getContext();
 

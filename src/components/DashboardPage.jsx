@@ -4,7 +4,7 @@ import ParkingLot from './ParkingLot';
 
 const DashboardPage = ({ userData }) => (
   <Box>
-    <ParkingLot />
+    <ParkingLot userData={userData} />
   </Box>
 );
 

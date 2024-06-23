@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Typography,
   Box,
@@ -11,121 +11,119 @@ import {
   Divider,
   useMediaQuery,
   useTheme,
+  Paper,
 } from '@mui/material';
-
-const mockReservations = [
-  {
-    id: 1,
-    date: '2024-06-01',
-    time: '10:00 AM - 12:00 PM',
-    location: '55 West 46th Street, New York',
-    spot: 'P3',
-  },
-  {
-    id: 2,
-    date: '2024-06-03',
-    time: '01:00 PM - 03:00 PM',
-    location: 'Raimundo Fernández Villaverde 57, Madrid',
-    spot: 'S6',
-  },
-  {
-    id: 3,
-    date: '2024-06-05',
-    time: '09:00 AM - 11:00 AM',
-    location: 'Royal Tulip Grzybowska 49, Warsaw',
-    spot: 'P5',
-  },
-  {
-    id: 4,
-    date: '2024-06-07',
-    time: '02:00 PM - 04:00 PM',
-    location: 'Tiefgarage Friedrichstadt-Passagen, Berlin',
-    spot: 'P8',
-  },
-  {
-    id: 5,
-    date: '2024-06-10',
-    time: '11:00 AM - 01:00 PM',
-    location: 'Barceló s/n, Madrid',
-    spot: 'S3',
-  },
-  {
-    id: 6,
-    date: '2024-06-12',
-    time: '08:00 AM - 10:00 AM',
-    location: 'Parking NFM Wrocław, Wrocław',
-    spot: 'S1',
-  },
-  {
-    id: 7,
-    date: '2024-06-14',
-    time: '05:00 PM - 07:00 PM',
-    location: '55 West 46th Street, New York',
-    spot: 'P1',
-  },
-  {
-    id: 8,
-    date: '2024-06-16',
-    time: '12:00 PM - 02:00 PM',
-    location: 'Raimundo Fernández Villaverde 57, Madrid',
-    spot: 'S4',
-  },
-  {
-    id: 9,
-    date: '2024-06-18',
-    time: '09:00 AM - 11:00 AM',
-    location: 'Royal Tulip Grzybowska 49, Warsaw',
-    spot: 'P9',
-  },
-  {
-    id: 10,
-    date: '2024-06-20',
-    time: '03:00 PM - 05:00 PM',
-    location: 'Tiefgarage Friedrichstadt-Passagen, Berlin',
-    spot: 'P10',
-  },
-];
+import axios from '../lib/axios';
 
 const HistoryPage = () => {
+  const [reservations, setReservations] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [locations, setLocations] = useState({});
   const theme = useTheme();
   const isSmDown = useMediaQuery(theme.breakpoints.down('sm'));
-  const isMdDown = useMediaQuery(theme.breakpoints.down('md'));
+
+  useEffect(() => {
+    const fetchExpiredReservations = async () => {
+      try {
+        const response = await axios.get('/reservations');
+        const expiredReservations = response.data.filter(
+          (reservation) => reservation.status === 'expired'
+        );
+
+        const locationData = {};
+        await Promise.all(
+          expiredReservations.map(async (reservation) => {
+            const parkingPlaceId = reservation.parking_place_id;
+            if (!locationData[parkingPlaceId]) {
+              const parkingResponse = await axios.get(`/parking-places/${parkingPlaceId}/parking`);
+              locationData[parkingPlaceId] = parkingResponse.data.address;
+            }
+          })
+        );
+
+        setLocations(locationData);
+        setReservations(expiredReservations);
+      } catch (error) {
+        console.error('Error fetching reservations:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchExpiredReservations();
+  }, []);
+
+  const calculatePrice = (st, et) => {
+    if (!st || !et) return 0;
+
+    const start = new Date(st);
+    const end = new Date(et);
+
+    const diffMs = end - start;
+
+    const diffHours = diffMs / (1000 * 60 * 60);
+
+    let price = 0;
+    if (diffHours <= 2) {
+      price = diffHours * 5;
+    } else {
+      price = 2 * 5 + (diffHours - 2) * 3;
+    }
+    return price.toFixed(2); 
+  };
 
   return (
     <Box sx={{ padding: isSmDown ? 2 : 3 }}>
       <Typography variant="h4" gutterBottom>
         Reservation History
       </Typography>
-      <Grid container spacing={2}>
-        {mockReservations.map((reservation) => (
-          <Grid item xs={12} sm={6} md={4} key={reservation.id}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6" color="textPrimary" gutterBottom>
-                  Reservation #{reservation.id}
-                </Typography>
-                <List dense>
-                  <ListItem>
-                    <ListItemText primary="Date" secondary={reservation.date} />
-                  </ListItem>
-                  <Divider />
-                  <ListItem>
-                    <ListItemText primary="Time" secondary={reservation.time} />
-                  </ListItem>
-                  <Divider />
-                  <ListItem>
-                    <ListItemText primary="Location" secondary={reservation.location} />
-                  </ListItem>
-                  <Divider />
-                  <ListItem>
-                    <ListItemText primary="Spot" secondary={reservation.spot} />
-                  </ListItem>
-                </List>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
+      {loading ? (
+        <Typography>Loading...</Typography>
+      ) : reservations.length === 0 ? (
+        <Paper elevation={3} sx={{ padding: 3, textAlign: 'center' }}>
+          <Typography variant="h6" gutterBottom>
+            You don't have any reservations yet.
+          </Typography>
+          <Typography variant="body1">
+            It looks like you don't have any expired reservations yet.
+          </Typography>
+        </Paper>
+      ) : (
+        <Grid container spacing={2}>
+          {reservations.map((reservation, idx) => (
+            <Grid item xs={12} sm={6} md={4} key={reservation.id}>
+              <Card>
+                <CardContent>
+                  <Typography variant="h6" color="textPrimary" gutterBottom>
+                    Reservation #{idx+1}
+                  </Typography>
+                  <List dense>
+                    <ListItem>
+                      <ListItemText primary="Date and Time" secondary={`${new Date(reservation.start_time).toLocaleString()} - ${new Date(reservation.end_time).toLocaleString()}`} />
+                    </ListItem>
+                    <Divider />
+                    <ListItem>
+                      <ListItemText primary="Location" secondary={locations[reservation.parking_place_id] || 'Loading...'} />
+                    </ListItem>
+                    <Divider />
+                    <ListItem>
+                      <ListItemText primary="Price" secondary={`$${calculatePrice(reservation.start_time, reservation.end_time) || 'Loading...'}`} />
+                    </ListItem>
+                    <Divider />
+                    <ListItem>
+                      <ListItemText primary="Parking place number" secondary={reservation.parking_place_id} />
+                    </ListItem>
+                    <Divider />
+                    <ListItem>
+                      <ListItemText primary="Status" secondary={'expired'} />
+                    </ListItem>
+                  </List>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      )}
     </Box>
   );
 };

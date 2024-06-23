@@ -1,83 +1,38 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Grid, Typography, Modal, Select, MenuItem, FormControl, InputLabel, TextField, Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import axios from '../lib/axios';
 
-const floorsData = {
-  ground: [
-    { id: 1, number: 'P1', occupied: false, pillar: 1, reservations: [
-      { start: '2024-06-08T08:00', end: '2024-06-08T10:00' },
-      { start: '2024-06-08T12:00', end: '2024-06-08T14:00' }
-    ] },
-    { id: 2, number: 'P2', occupied: true, pillar: 1, reservations: [
-      { start: '2024-06-08T09:00', end: '2024-06-08T11:00' }
-    ] },
-    { id: 3, number: 'P3', occupied: false, pillar: 1, reservations: [] },
-    { id: 4, number: 'P4', occupied: true, pillar: 1, reservations: [] },
-    { id: 5, number: 'P5', occupied: false, pillar: 1, reservations: [] },
-    { id: 6, number: 'P6', occupied: false, pillar: 1, reservations: [] },
-    { id: 7, number: 'P7', occupied: true, pillar: 1, reservations: [
-      { start: '2024-06-08T10:00', end: '2024-06-08T12:00' },
-      { start: '2024-06-08T10:00', end: '2024-06-08T12:00' },
-      { start: '2024-06-08T10:00', end: '2024-06-08T12:00' },
-      { start: '2024-06-08T10:00', end: '2024-06-08T12:00' },
-      { start: '2024-06-08T10:00', end: '2024-06-08T12:00' }
-    ] },
-    { id: 8, number: 'P8', occupied: false, pillar: 1, reservations: [] },
-    { id: 9, number: 'P9', occupied: true, pillar: 1, reservations: [] },
-    { id: 10, number: 'P10', occupied: false, pillar: 1, reservations: [] },
-    { id: 11, number: 'S1', occupied: false, pillar: 2, reservations: [] },
-    { id: 12, number: 'S2', occupied: true, pillar: 2, reservations: [] },
-    { id: 13, number: 'S3', occupied: false, pillar: 2, reservations: [] },
-    { id: 14, number: 'S4', occupied: true, pillar: 2, reservations: [] },
-    { id: 15, number: 'S5', occupied: true, pillar: 2, reservations: [] },
-    { id: 16, number: 'S6', occupied: false, pillar: 2, reservations: [] },
-    { id: 17, number: 'S7', occupied: true, pillar: 2, reservations: [] },
-    { id: 18, number: 'S8', occupied: true, pillar: 2, reservations: [] },
-    { id: 19, number: 'S9', occupied: true, pillar: 2, reservations: [] },
-    { id: 20, number: 'S10', occupied: false, pillar: 2, reservations: [] },
-    { id: 21, number: 'T1', occupied: false, pillar: 3, reservations: [] },
-    { id: 22, number: 'T2', occupied: true, pillar: 3, reservations: [] },
-    { id: 23, number: 'T3', occupied: false, pillar: 3, reservations: [] },
-    { id: 24, number: 'T4', occupied: true, pillar: 3, reservations: [] },
-    { id: 25, number: 'T5', occupied: false, pillar: 3, reservations: [] },
-    { id: 26, number: 'T6', occupied: false, pillar: 3, reservations: [] },
-    { id: 27, number: 'T7', occupied: true, pillar: 3, reservations: [] },
-    { id: 28, number: 'T8', occupied: false, pillar: 3, reservations: [] },
-    { id: 29, number: 'T9', occupied: true, pillar: 3, reservations: [] },
-    { id: 30, number: 'T10', occupied: false, pillar: 3, reservations: [] },
-    { id: 31, number: 'U1', occupied: false, pillar: 4, reservations: [] },
-    { id: 32, number: 'U2', occupied: true, pillar: 4, reservations: [] },
-    { id: 33, number: 'U3', occupied: false, pillar: 4, reservations: [] },
-    { id: 34, number: 'U4', occupied: true, pillar: 4, reservations: [] },
-    { id: 35, number: 'U5', occupied: false, pillar: 4, reservations: [] },
-    { id: 36, number: 'U6', occupied: false, pillar: 4, reservations: [] },
-    { id: 37, number: 'U7', occupied: true, pillar: 4, reservations: [] },
-    { id: 38, number: 'U8', occupied: false, pillar: 4, reservations: [] },
-    { id: 39, number: 'U9', occupied: true, pillar: 4, reservations: [] },
-    { id: 40, number: 'U10', occupied: false, pillar: 4, reservations: [] },
-  ],
-  // Analogicznie dla pozostałych pięter...
-};
-
-const parkingLots = [
-  { id: '1', name: '55 West 46th Street - Valet Garage, New York', country: 'Stany Zjednoczone' },
-  { id: '2', name: 'Raimundo Fernández Villaverde 57 bajo, 28003 Madrid', country: 'Hiszpania' },
-  { id: '3', name: 'Royal Tulip (Warsaw) Grzybowska 49, Warszawa', country: 'Polska' },
-  { id: '4', name: 'Tiefgarage Friedrichstadt-Passagen (Q 206) Taubenstraße 14, Berlin', country: 'Niemcy' },
-  { id: '5', name: 'Barceló (Madrid) Barceló s/n, 28004 Madrid', country: 'Hiszpania' },
-  { id: '6', name: 'Parking NFM Wrocław (Wrocław) Plac Wolności 1, 50-071 Wrocław', country: 'Polska' },
-];
-
-const ParkingLot = () => {
-  const [selectedParkingLot, setSelectedParkingLot] = useState(parkingLots[0].id);
-  const [selectedFloor, setSelectedFloor] = useState('ground');
+const ParkingLot = ({ userData }) => {
+  const [selectedParkingLot, setSelectedParkingLot] = useState('');
   const [selectedSpace, setSelectedSpace] = useState(null);
   const [open, setOpen] = useState(false);
   const [startDateTime, setStartDateTime] = useState('');
   const [endDateTime, setEndDateTime] = useState('');
   const [filtersApplied, setFiltersApplied] = useState(false);
+  const [parkingLots, setParkingLots] = useState(null);
+  const [freePlaces, setFreePlaces] = useState(null);
+  const [parkingPlaces, setParkingPlaces] = useState([]);
+  const [alert, setAlert] = useState({ show: false, message: '', severity: 'error' });
+  const [loading, setLoading] = useState(false);
+  const [errorPopup, setErrorPopup] = useState({ open: false, message: '', severity: 'error' });
+
+  const navigate = useNavigate();
+
+  const fetchParkings = async () => {
+    const parkings = await axios.get('/parkings');
+    setParkingLots(parkings.data);
+  };
+
+  useEffect(() => {
+    fetchParkings();
+    console.log(parkingLots);
+  }, []);
 
   const handleParkingLotChange = (event) => {
     setSelectedParkingLot(event.target.value);
+    setFreePlaces(null);
+    setFiltersApplied(false);
   };
 
   const handleSpaceClick = (space) => {
@@ -90,46 +45,134 @@ const ParkingLot = () => {
     setSelectedSpace(null);
   };
 
-  const handleReserve = () => {
-    alert(`Space ${selectedSpace.number} reserved!`);
+  const handleReserve = async () => {
+    try {
+      const reservationData = {
+        parking_place_id: selectedSpace.id,
+        start_time: `${startDateTime.split('T')[0]} ${startDateTime.split('T')[1]}`,
+        end_time: `${endDateTime.split('T')[0]} ${endDateTime.split('T')[1]}`,
+      };
+      console.log(reservationData);
+      await axios.post(`parkings/${selectedParkingLot}/reservation`, reservationData);
+      setErrorPopup({ open: true, message: 'Reservation created successfully!', severity: 'success' });
+
+      setParkingPlaces((prevParkingPlaces) =>
+        prevParkingPlaces.map((place) =>
+          place.id === selectedSpace.id ? { ...place, occupied: true } : place
+        )
+      );
+    } catch (error) {
+      setErrorPopup({ open: true, message: 'Failed to create reservation.', severity: 'error' });
+    }
     handleClose();
   };
 
-  const applyFilters = () => {
-    setFiltersApplied(true);
+  const fetchParkingPlaces = async () => {
+    setLoading(true);
+    const response = await axios.get(`/parkings/${selectedParkingLot}`);
+    const data = response.data.parking_places.map(place => ({
+      ...place,
+      occupied: false,
+    }));
+    setParkingPlaces(data);
+    const start = `${startDateTime.split('T')[0]} ${startDateTime.split('T')[1]}`;
+    const end = `${endDateTime.split('T')[0]} ${endDateTime.split('T')[1]}`;
+    const freePlacesResponse = await axios.get(`/parkings/${selectedParkingLot}/free-places`, {
+      params: {
+        start_time: start,
+        end_time: end,
+      },
+    });
+    setFreePlaces(freePlacesResponse.data);
+    setLoading(false);
   };
 
-  const isSpaceAvailable = (space) => {
-    if (!startDateTime || !endDateTime) return true;
-
-    const reservationStart = new Date(startDateTime);
-    const reservationEnd = new Date(endDateTime);
-
-    for (const reservation of space.reservations) {
-      const resStart = new Date(reservation.start);
-      const resEnd = new Date(reservation.end);
-
-      if (
-        (reservationStart >= resStart && reservationStart < resEnd) ||
-        (reservationEnd > resStart && reservationEnd <= resEnd) ||
-        (reservationStart <= resStart && reservationEnd >= resEnd)
-      ) {
-        return false;
-      }
+  const applyFilters = () => {
+    if (!selectedParkingLot) {
+      setErrorPopup({ open: true, message: 'Parking lot must be selected.', severity: 'error' });
+      return;
     }
 
-    return true;
+    if (!startDateTime || !endDateTime) {
+      setErrorPopup({ open: true, message: 'Both start time and end time are required.', severity: 'error' });
+      return;
+    }
+
+    const start = new Date(startDateTime);
+    const end = new Date(endDateTime);
+    const now = new Date();
+
+    if (start >= end) {
+      setErrorPopup({ open: true, message: 'Start time must be earlier than end time.', severity: 'error' });
+      return;
+    }
+
+    if (start < now) {
+      setErrorPopup({ open: true, message: 'Start time must be from the current date and time onwards.', severity: 'error' });
+      return;
+    }
+
+    if (end - start < 30 * 60 * 1000) {
+      setErrorPopup({ open: true, message: 'The time difference between start and end time must be at least 30 minutes.', severity: 'error' });
+      return;
+    }
+
+    setFiltersApplied(true);
+    setErrorPopup({ open: false, message: '', severity: 'error' });
+
+    fetchParkingPlaces();
   };
 
-  const renderSpace = (space) => {
-    const available = isSpaceAvailable(space);
+  const findMissingIds = (parkingPlaces, freePlaces) => {
+    if (!Array.isArray(parkingPlaces) || !Array.isArray(freePlaces)) {
+      return [];
+    }
+
+    let missingIds = [];
+
+    parkingPlaces.forEach(place => {
+      let idInFreePlaces = freePlaces.some(freePlace => freePlace.id === place.id);
+      if (!idInFreePlaces) {
+        missingIds.push(place.id);
+      }
+    });
+
+    return missingIds;
+  };
+
+  const calculatePrice = () => {
+    if (!startDateTime || !endDateTime) return 0;
+
+    const start = new Date(startDateTime);
+    const end = new Date(endDateTime);
+
+    const diffMs = end - start;
+
+    const diffHours = diffMs / (1000 * 60 * 60);
+
+    let price = 0;
+    if (diffHours <= 2) {
+      price = diffHours * 5;
+    } else {
+      price = 2 * 5 + (diffHours - 2) * 3;
+    }
+    return price.toFixed(2);
+  };
+
+  const renderSpace = (sp) => {
+    const space = sp;
+    console.log(sp);
+    const missingIds = findMissingIds(parkingPlaces, freePlaces);
+    if (missingIds.includes(space.id)) {
+      space.occupied = true;
+    }
     return (
       <Box
         key={space.id}
         sx={{
           width: { xs: 50, sm: 70, md: 100 },
           height: { xs: 70, sm: 70, md: 100 },
-          backgroundColor: available ? (space.occupied ? '#ff6666' : '#66ff66') : '#cccccc',
+          backgroundColor: space.occupied ? '#ff6666' : '#66ff66',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -143,22 +186,31 @@ const ParkingLot = () => {
         }}
         onClick={() => handleSpaceClick(space)}
       >
-        {space.number}
+        {space.id}
       </Box>
     );
   };
 
   const renderPillars = () => {
-    if (!filtersApplied) return null;
+    if (!filtersApplied || loading || !parkingPlaces.length || !freePlaces || !freePlaces.length) {
+      return null;
+    }
 
-    const pillars = Array.from(new Set(floorsData[selectedFloor].map(space => space.pillar)));
+    const missingIds = findMissingIds(parkingPlaces, freePlaces);
+
+    const pillars = Array.from(new Set(parkingPlaces.map(space => space.pillar))).sort((a, b) => a - b);
     return (
       <Grid container spacing={2} justifyContent="center" sx={{ width: '100%', mt: 2 }}>
         {pillars.map((pillar, index) => (
           <Grid item xs={12} sm={6} md={3} key={pillar}>
             <Typography marginBottom={2} variant="h6" align="center">Pillar {pillar}</Typography>
             <Grid container spacing={2} justifyContent="center">
-              {floorsData[selectedFloor].filter(space => space.pillar === pillar).map(renderSpace)}
+              {parkingPlaces.filter(space => space.pillar === pillar).map(space => {
+                if (missingIds.includes(space.id)) {
+                  space.occupied = true;
+                }
+                return renderSpace(space);
+              })}
             </Grid>
           </Grid>
         ))}
@@ -166,45 +218,33 @@ const ParkingLot = () => {
     );
   };
 
+  const now = new Date();
+  const formattedNow = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
       <Grid container spacing={2} justifyContent="center" sx={{ width: '100%' }}>
         <Grid item xs={12} sm={6} lg={3}>
           <FormControl fullWidth>
-            <InputLabel id="parking-lot-select-label">Parking</InputLabel>
+            <InputLabel id="parking-lot-select-label">Parking Lot</InputLabel>
             <Select
               value={selectedParkingLot}
               onChange={handleParkingLotChange}
             >
-              {parkingLots.map((lot) => (
+              {parkingLots ? parkingLots.map((lot) => (
                 <MenuItem key={lot.id} value={lot.id}>{lot.name} ({lot.country})</MenuItem>
-              ))}
+              )) : (
+                <MenuItem>Loading...</MenuItem>
+              )}
             </Select>
           </FormControl>
-        </Grid>
-        <Grid item xs={12} sm={6} lg={3}>
-          {
-            filtersApplied && 
-            <FormControl fullWidth>
-              <InputLabel id="floor-select-label">Piętro</InputLabel>
-              <Select
-                value={selectedFloor}
-                onChange={(e) => setSelectedFloor(e.target.value)}
-              >
-                <MenuItem value="ground">Parter</MenuItem>
-                <MenuItem value="first">Pierwsze piętro</MenuItem>
-                <MenuItem value="second">Drugie piętro</MenuItem>
-              </Select>
-            </FormControl>
-
-          }
         </Grid>
       </Grid>
 
       <Grid container spacing={2} justifyContent="center" sx={{ mt: 2, width: '100%' }}>
         <Grid item xs={12} sm={6} lg={3}>
           <TextField
-            label="Data i godzina rozpoczęcia"
+            label="Start Date and Time"
             type="datetime-local"
             InputLabelProps={{
               shrink: true,
@@ -212,11 +252,12 @@ const ParkingLot = () => {
             value={startDateTime}
             onChange={(e) => setStartDateTime(e.target.value)}
             fullWidth
+            inputProps={{ min: formattedNow }}
           />
         </Grid>
         <Grid item xs={12} sm={6} lg={3}>
           <TextField
-            label="Data i godzina zakończenia"
+            label="End Date and Time"
             type="datetime-local"
             InputLabelProps={{
               shrink: true,
@@ -224,28 +265,70 @@ const ParkingLot = () => {
             value={endDateTime}
             onChange={(e) => setEndDateTime(e.target.value)}
             fullWidth
+            inputProps={{ min: formattedNow }}
           />
         </Grid>
-        <Grid 
-          item 
-          xs={12} 
-          sm={6} 
-          lg={3} 
-          sx={{ mt: { xs: 2, lg: 0 }, display: 'flex', alignItems: 'center' }}>
+        <Grid
+          item
+          xs={12}
+          sm={6}
+          lg={3}
+          sx={{ mt: { xs: 2, lg: 0 }, display: 'flex', alignItems: 'center' }}
+        >
           <Button
             variant="contained"
             color="primary"
             onClick={applyFilters}
             sx={{ height: '100%', width: { xs: '100%', sm: '100%', lg: 'auto' } }}
           >
-            Zastosuj filtry
+            Apply Filters
           </Button>
         </Grid>
         {renderPillars()}
       </Grid>
-      
+
+      <Modal
+        open={errorPopup.open}
+        onClose={() => {
+          setErrorPopup({ open: false, message: '', severity: 'error' });
+        }}
+      >
+        <Box
+          sx={{
+            p: 4,
+            backgroundColor: 'white',
+            width: '80%',
+            maxWidth: 400,
+            margin: 'auto',
+            borderRadius: 2,
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+          }}
+        >
+          <Typography variant="h6" color={errorPopup.severity === 'error' ? 'red' : 'green'}>
+            {errorPopup.message}
+          </Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth
+            sx={{ mt: 2 }}
+            onClick={() => {
+              setErrorPopup({ open: false, message: '', severity: 'error' });
+              if (errorPopup.severity === 'success') {
+                navigate('/dashboard/reservations');
+              }
+            }}
+          >
+            Go to reservations
+          </Button>
+        </Box>
+      </Modal>
+
       <Modal open={open} onClose={handleClose}>
-        <Box 
+        <Box
           sx={{
             p: 4,
             backgroundColor: 'white',
@@ -261,68 +344,64 @@ const ParkingLot = () => {
         >
           {selectedSpace && (
             <>
-              <Typography variant="h6">Szczegóły miejsca</Typography>
+              <Typography variant="h6">Space Details</Typography>
               <Typography>ID: {selectedSpace.id}</Typography>
-              <Typography>Numer: {selectedSpace.number}</Typography>
-              <Typography>Zajęte: {selectedSpace.occupied ? 'Tak' : 'Nie'}</Typography>
-              {!selectedSpace.occupied ? (
-                <Box component="form" sx={{ mt: 2 }}>
-                  <TextField
-                    fullWidth
-                    label="Twoje imię"
-                    margin="normal"
-                    required
-                  />
-                  <TextField
-                    fullWidth
-                    label="Twój email"
-                    margin="normal"
-                    required
-                  />
-                  <TextField
-                    fullWidth
-                    label="Data rezerwacji"
-                    type="date"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    margin="normal"
-                    required
-                  />
-                  <TextField
-                    fullWidth
-                    label="Godzina rozpoczęcia"
-                    type="time"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    margin="normal"
-                    required
-                  />
-                  <TextField
-                    fullWidth
-                    label="Godzina zakończenia"
-                    type="time"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    margin="normal"
-                    required
-                  />
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    fullWidth
-                    sx={{ mt: 2 }}
-                    onClick={handleReserve}
-                  >
-                    Zarezerwuj
-                  </Button>
-                </Box>
-              ) : (
+              <Typography>Pillar: {selectedSpace.pillar}</Typography>
+              <Typography>Occupied: {selectedSpace.occupied ? 'Yes' : 'No'}</Typography>
+              <Typography>Parking: {selectedParkingLot}</Typography>
+              <br />
+
+              {selectedSpace.occupied ? (
                 <Typography variant="body1" sx={{ mt: 2 }}>
-                  To miejsce jest obecnie zajęte. Następne dostępne miejsce będzie wolne wkrótce.
+                  The space is currently occupied. It will be free soon.
                 </Typography>
+              ) : (
+                <>
+                  <Typography variant='title'>
+                    First 2 hours: $5 per hour.
+                    Each additional hour: $3 per hour.
+                  </Typography>
+                  <Typography>Price: ${calculatePrice()}</Typography>
+                  <Box sx={{ mt: 2, textAlign: 'left' }}>
+                    <Typography variant="body1" sx={{ fontWeight: 'bold' }}>Email:</Typography>
+                    <Typography variant="body2" sx={{ mb: 1 }}>{userData.email}</Typography>
+                    <Typography variant="body1" sx={{ fontWeight: 'bold' }}>Name:</Typography>
+                    <Typography variant="body2">{userData.name}</Typography>
+                  </Box>
+                  <Box component="form" sx={{ mt: 2 }}>
+                    <TextField
+                      fullWidth
+                      label="Starting date of reservation"
+                      type="datetime-local"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      value={startDateTime}
+                      margin="normal"
+                      required
+                    />
+                    <TextField
+                      fullWidth
+                      value={endDateTime}
+                      label="End date of reservation"
+                      type="datetime-local"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      margin="normal"
+                      required
+                    />
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      fullWidth
+                      sx={{ mt: 2 }}
+                      onClick={handleReserve}
+                    >
+                      Reserve
+                    </Button>
+                  </Box>
+                </>
               )}
             </>
           )}

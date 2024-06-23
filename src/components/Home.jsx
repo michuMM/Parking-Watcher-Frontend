@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Typography,
   Box,
@@ -22,55 +22,12 @@ import bookSpace from "../assets/bookspace.jpg";
 import calendar from "../assets/calendar.jpg";
 import parking from "../assets/parking.jpg";
 import { Folder as FolderIcon } from "@mui/icons-material";
-import usaFlag from "../assets/usaflag.png";
-import spainFlag from "../assets/spainflag.png";
-import polandFlag from "../assets/polandflag.png";
-import germanyFlag from "../assets/germanyflag.jpg";
 import Map from "../components/Map";
 import Dashboard from "./Dashboard";
 import Footer from "./Footer";
+import { parkings } from "../assets/parkings";
 
 const Home = () => {
-  const items = [
-    {
-      id: 1,
-      country: "United States",
-      image: usaFlag,
-      address: "55 West 46th Street - Valet Garage, New York",
-    },
-    {
-      id: 2,
-      country: "Spain",
-      image: spainFlag,
-      address: "Raimundo Fernández Villaverde 57 bajo, 28003 Madrid",
-    },
-    {
-      id: 3,
-      country: "Poland",
-      image: polandFlag,
-      address: "Royal Tulip (Warsaw) Grzybowska 49, Warsaw",
-    },
-    {
-      id: 4,
-      country: "Germany",
-      image: germanyFlag,
-      address:
-        "Tiefgarage Friedrichstadt-Passagen (Q 206) Taubenstraße 14, Berlin",
-    },
-    {
-      id: 5,
-      country: "Spain",
-      image: spainFlag,
-      address: "Barceló (Madrid) Barceló s/n, 28004, Madrid",
-    },
-    {
-      id: 6,
-      country: "Poland",
-      image: polandFlag,
-      address: "Parking NFM Wrocław (Wrocław) Plac Wolności 1, 50-071 Wrocław",
-    },
-  ];
-
   const { userToken } = getContext();
 
   const [formData, setFormData] = useState({
@@ -244,14 +201,7 @@ const Home = () => {
                       Choose desired location
                     </Typography>
                     <Typography variant="body2">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                      Nullam id velit non nisi scelerisque pellentesque.
-                      Phasellus vel orci et lacus pellentesque pretium. Duis
-                      volutpat ante eu fermentum accumsan. Vestibulum sodales
-                      urna nec tortor consequat, vel pulvinar metus lacinia.
-                      Integer mattis arcu nec dolor commodo, nec bibendum quam
-                      faucibus. Mauris in lorem id elit vehicula fringilla sit
-                      amet nec metus.
+                      Select the most convenient parking location for you from our extensive network. Whether you need a spot near your home, office, or a busy city center, we've got you covered. Enjoy the flexibility and ease of finding the perfect spot that suits your needs.
                     </Typography>
                   </CardContent>
                 </Card>
@@ -274,14 +224,7 @@ const Home = () => {
                       Choose a suitable date
                     </Typography>
                     <Typography variant="body2">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                      Nullam id velit non nisi scelerisque pellentesque.
-                      Phasellus vel orci et lacus pellentesque pretium. Duis
-                      volutpat ante eu fermentum accumsan. Vestibulum sodales
-                      urna nec tortor consequat, vel pulvinar metus lacinia.
-                      Integer mattis arcu nec dolor commodo, nec bibendum quam
-                      faucibus. Mauris in lorem id elit vehicula fringilla sit
-                      amet nec metus.
+                      Plan ahead and choose the exact date and time you need a parking spot. Our system allows you to book in advance, ensuring you have a guaranteed spot when you need it most. Avoid the hassle of last-minute searches and reserve your parking effortlessly.
                     </Typography>
                   </CardContent>
                 </Card>
@@ -304,20 +247,14 @@ const Home = () => {
                       Safely park your car
                     </Typography>
                     <Typography variant="body2">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                      Nullam id velit non nisi scelerisque pellentesque.
-                      Phasellus vel orci et lacus pellentesque pretium. Duis
-                      volutpat ante eu fermentum accumsan. Vestibulum sodales
-                      urna nec tortor consequat, vel pulvinar metus lacinia.
-                      Integer mattis arcu nec dolor commodo, nec bibendum quam
-                      faucibus. Mauris in lorem id elit vehicula fringilla sit
-                      amet nec metus.
+                      Rest easy knowing your vehicle is parked in a secure location. Our parking facilities are equipped with top-notch security measures, including surveillance cameras and regular patrols. Enjoy peace of mind while you go about your day, knowing your car is in good hands.
                     </Typography>
                   </CardContent>
                 </Card>
               </Grid>
             </Grid>
           </Box>
+          {/* where we are located section */}
           <Box
             sx={{
               py: 8,
@@ -343,18 +280,18 @@ const Home = () => {
               marginTop={4}
             >
               <Grid item xs={11} md={6} backgroundColor="white">
-                <List dense>
-                  {items.map((item) => (
+                <List dense sx={{ maxHeight: 400, overflowY: 'auto' }}>
+                  {parkings.map((item) => (
                     <div key={item.id}>
                       <ListItem>
                         <ListItemAvatar>
-                          <Avatar src={item.image}>
+                          <Avatar src={item.flag}>
                             <FolderIcon />
                           </Avatar>
                         </ListItemAvatar>
                         <ListItemText
-                          primary={item.country}
-                          secondary={item.address}
+                          primary={item.name}
+                          secondary={`${item.address}, ${item.country}`}
                         />
                       </ListItem>
                       <Divider />
